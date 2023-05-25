@@ -1,0 +1,59 @@
+{
+    "djangointellisense.settingsModule": "api.settings",
+    "djangointellisense.projectRoot": "${workspaceFolder}",
+    "editor.formatOnSave": true,
+    "python.analysis.exclude": [
+        "${userHome}\\Envs\\reddit-api\\Lib\\xml",
+    ],
+    "python.analysis.ignore": [
+        "${userHome}\\Envs\\reddit-api\\Lib\\xml",
+    ],
+    "python.analysis.autoFormatStrings": true,
+    "python.analysis.completeFunctionParens": true,
+    "python.analysis.gotoDefinitionInStringLiteral": true,
+    "python.analysis.packageIndexDepths": [
+        {
+            "name": "django",
+            "depth": 5,
+            "includeAllSymbols": true
+        },
+        {
+            "name": "rest_framework",
+            "depth": 4,
+            "includeAllSymbols": true
+        },
+        {
+            "name": "django_lifecycle",
+            "depth": 4
+        },
+        {
+            "name": "django_filters",
+            "depth": 4
+        },
+        {
+            "name": "drf_spectacular",
+            "depth": 3
+        },
+        {
+            "name": "rest_framework_nested",
+            "depth": 3
+        }
+    ],
+    "python.analysis.pylanceLspClientEnabled": true,
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.indexing": true,
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.formatting.blackArgs": [
+        "--line-length=80"
+    ],
+    "python.linting.enabled": true,
+    "python.linting.pylintArgs": [
+        "--disable=E1101",
+        "--disable=C0114",
+        "--disable=C0115",
+        "--disable=C0116",
+        "--load-plugin=pylint_django",
+        "--django-settings-module=api.settings"
+    ],
+    "python.linting.pylintEnabled": true,
+}
