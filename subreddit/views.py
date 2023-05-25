@@ -1,11 +1,10 @@
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from common.mixins.serializer_action_class_mixin import (
-    SerializerActionClassMixin,
-)
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+
+from common.mixins import SerializerActionClassMixin
 from subreddit.models import Subreddit, SubredditLink
 from subreddit.serializers import (
     SubredditCreateUpdateSerializer,
@@ -34,9 +33,7 @@ class SubredditViewSet(SerializerActionClassMixin, ModelViewSet):
 @extend_schema(
     tags=["Subreddit Links"],
     parameters=[
-        OpenApiParameter(
-            "subreddit_name", OpenApiTypes.STR, OpenApiParameter.PATH
-        )
+        OpenApiParameter("subreddit_name", OpenApiTypes.STR, OpenApiParameter.PATH)
     ],
 )
 class SubredditLinkViewSet(
