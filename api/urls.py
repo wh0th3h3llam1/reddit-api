@@ -19,11 +19,49 @@ from django.urls import include, path
 
 from djoser.views import TokenCreateView, TokenDestroyView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from rest_framework_nested import routers
+
+from post.views import CommentViewSet, PostViewSet
+from subreddit.views import SubredditLinkViewSet, SubredditViewSet
+from users.views import UserViewSet
+
+
+router = routers.SimpleRouter()
+
+router.register(prefix=r"r", viewset=SubredditViewSet, basename="subreddits")
+
+post_router = routers.NestedSimpleRouter(
+    parent_router=router, parent_prefix=r"r", lookup="subreddit"
+)
+post_router.register(prefix=r"posts", viewset=PostViewSet, basename="posts")
+
+comment_router = routers.NestedSimpleRouter(
+    parent_router=post_router, parent_prefix=r"posts", lookup="posts"
+)
+comment_router.register(
+    prefix=r"comments", viewset=CommentViewSet, basename="comments"
+)
+
+subreddit_link_router = routers.NestedSimpleRouter(
+    parent_router=router, parent_prefix="r", lookup="subreddit"
+)
+subreddit_link_router.register(
+    prefix="links", viewset=SubredditLinkViewSet, basename="subreddit-links"
+)
+
+user_router = routers.SimpleRouter()
+
+user_router.register(prefix="u", viewset=UserViewSet, basename="users")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("login/", TokenCreateView.as_view(), name="login"),
     path("logout/", TokenDestroyView.as_view(), name="logout"),
+    path("api/", include(user_router.urls)),
+    path("api/", include(router.urls)),
+    path("api/", include(post_router.urls)),
+    path("api/", include(comment_router.urls)),
+    path("api/", include(subreddit_link_router.urls)),
 ]
 
 urlpatterns += [

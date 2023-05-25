@@ -58,7 +58,7 @@ THIRD_PARTY_APPS = [
     "ckeditor",
 ]
 
-LOCAL_APPS = ["core"]
+LOCAL_APPS = ["core", "post", "subreddit", "users"]
 
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
