@@ -11,3 +11,10 @@ POST_TYPES = Choices(
     (PostType.VIDEO, _("Video")),
     (PostType.LINK, _("Link")),
 )
+
+
+FEED_TYPES = Choices(
+    ("subscribed", "Subscribed"),
+    ("popular", "Popular"),
+    ("all", "All"),
+)

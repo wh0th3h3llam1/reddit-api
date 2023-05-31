@@ -10,3 +10,7 @@ class PostType:
     IMAGE = "image"
     LINK = "link"
     VIDEO = "video"
+
+    @classmethod
+    def values(self) -> list[str]:
+        return [self.TEXT, self.IMAGE, self.LINK, self.VIDEO]

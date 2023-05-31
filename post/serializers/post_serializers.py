@@ -6,10 +6,28 @@ from rest_framework import serializers
 from common.mixins import SerializerCreateUpdateOnlyMixin
 from core.serializers import DynamicFieldsModelSerializer
 from post.models import Post
-from post.serializers import CommentSerializer
+from subreddit.serializers import SubredditListSerializer
 from users.serializers import UserSerializer
 
 # Create your serializers here.
+
+
+class PostListSerializer(DynamicFieldsModelSerializer):
+    user = UserSerializer(fields=("id", "username"))
+    subreddit = SubredditListSerializer()
+
+    class Meta:
+        model = Post
+        fields = (
+            "user",
+            "subreddit",
+            "title",
+            "body",
+            "slug",
+            "post_type",
+            "locked",
+            "created",
+        )
 
 
 class PostDetailSerializer(DynamicFieldsModelSerializer):

@@ -92,6 +92,10 @@ class SubredditUser(BaseModel):
     class Meta:
         verbose_name = "Subreddit User"
         verbose_name_plural = "Subreddit Users"
+        unique_together = ("user", "subreddit")
+
+    def __str__(self) -> str:
+        return f"{self.user} - {self.subreddit}"
 
 
 class Moderator(BaseModel):
