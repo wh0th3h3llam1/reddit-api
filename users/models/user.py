@@ -7,11 +7,12 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.fields import MinLengthValidator
 
-# from common.avatar import DiceBearAvatar
+from phonenumber_field.modelfields import PhoneNumberField
+
 from common.constants import FieldConstants
+from common.utils import get_avatar_path, get_default_avatar_path
 from common.validators import username_validator
 from core.models import BaseModel
 from users.managers import UserManager
@@ -27,14 +28,14 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
         verbose_name=_("Username"),
         unique=True,
         max_length=FieldConstants.MAX_USERNAME_LENGTH,
-        # validators=(
-        #     UnicodeUsernameValidator(),
-        #     MinLengthValidator(
-        #         limit_value=5,
-        #         message=_("Username must have at least 5 characters"),
-        #     ),
-        #     username_validator,
-        # ),
+        validators=(
+            UnicodeUsernameValidator(),
+            MinLengthValidator(
+                limit_value=5,
+                message=_("Username must have at least 5 characters"),
+            ),
+            username_validator,
+        ),
         error_messages={"unique": "Username already taken"},
         help_text=_(""),
     )
@@ -44,9 +45,11 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
         verbose_name=_("Phone Number"), blank=True, null=True
     )
 
-    # avatar = models.ImageField(
-    #     upload_to="get_avatar_path", blank=True, default=DiceBearAvatar.generate_avatar
-    # )
+    avatar = models.ImageField(
+        upload_to=get_avatar_path,
+        blank=True,
+        default=get_default_avatar_path,
+    )
 
     is_staff = models.BooleanField(
         verbose_name=_("Staff Status"),
