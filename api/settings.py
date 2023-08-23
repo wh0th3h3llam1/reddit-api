@@ -51,6 +51,11 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     "djoser",
     "corsheaders",
     "django_extensions",
@@ -103,6 +108,14 @@ WSGI_APPLICATION = "api.wsgi.application"
 DATABASES = {"default": env.db()}
 
 
+# AUTHENTICATION_BACKENDS = [
+#     # Needed to login by username in Django admin, regardless of `allauth`
+#     "django.contrib.auth.backends.ModelBackend",
+#     # `allauth` specific authentication methods, such as login by e-mail
+#     "allauth.account.auth_backends.AuthenticationBackend",
+# ]
+
+
 AUTH_USER_MODEL = "users.User"
 
 # Password validation
@@ -135,6 +148,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+
+# SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -186,6 +201,16 @@ DJOSER = {
         "user": "users.serializers.UserSerializer",
     }
 }
+
+
+REST_AUTH = {
+    "OLD_PASSWORD_FIELD_ENABLED": True,
+    "LOGOUT_ON_PASSWORD_CHANGE": True,
+}
+
+
+# AllAuth Config
+ACCOUNT_EMAIL_VERIFICATION = None
 
 
 SPECTACULAR_SETTINGS = {

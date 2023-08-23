@@ -17,7 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from djoser.views import TokenCreateView, TokenDestroyView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_nested import routers
 
@@ -55,8 +54,8 @@ user_router.register(prefix="u", viewset=UserViewSet, basename="users")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("login/", TokenCreateView.as_view(), name="login"),
-    path("logout/", TokenDestroyView.as_view(), name="logout"),
+    path("auth/", include("dj_rest_auth.urls")),
+    path("auth/signup/", include("dj_rest_auth.registration.urls")),
     path("api/", include(user_router.urls)),
     path("api/", include(router.urls)),
     path("api/", include(post_router.urls)),
