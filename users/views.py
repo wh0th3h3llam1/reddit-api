@@ -5,14 +5,15 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.viewsets import GenericViewSet
 
-from django_filters.rest_framework import DjangoFilterBackend
+# from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 
 from common.constants import PostType
 from common.mixins import SerializerActionClassMixin
 from post.models import Post
 from post.serializers.post_serializers import PostListSerializer
-from users.filters import UserHomeFeedFilterSet
+
+# from users.filters import UserHomeFeedFilterSet
 from users.models import User
 from users.serializers import UserSerializer
 
