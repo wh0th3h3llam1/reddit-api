@@ -37,7 +37,6 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
             username_validator,
         ),
         error_messages={"unique": "Username already taken"},
-        help_text=_(""),
     )
     email = models.CharField(max_length=100)
 
