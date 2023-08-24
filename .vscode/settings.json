@@ -33,7 +33,6 @@
             "depth": 3
         }
     ],
-    "python.analysis.pylanceLspClientEnabled": true,
     "python.analysis.autoImportCompletions": true,
     "python.analysis.indexing": true,
     "python.analysis.inlayHints.functionReturnTypes": true,
@@ -50,4 +49,9 @@
         "--django-settings-module=api.settings"
     ],
     "python.linting.pylintEnabled": true,
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
 }
