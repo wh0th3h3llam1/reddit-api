@@ -2,12 +2,6 @@
     "djangointellisense.settingsModule": "api.settings",
     "djangointellisense.projectRoot": "${workspaceFolder}",
     "editor.formatOnSave": true,
-    "python.analysis.exclude": [
-        "${userHome}\\Envs\\reddit-api\\Lib\\xml",
-    ],
-    "python.analysis.ignore": [
-        "${userHome}\\Envs\\reddit-api\\Lib\\xml",
-    ],
     "python.analysis.autoFormatStrings": true,
     "python.analysis.completeFunctionParens": true,
     "python.analysis.gotoDefinitionInStringLiteral": true,
