@@ -22,6 +22,7 @@ class AuthenticationTest(TestCase):
         assert response.json() == expected_response
 
     def test_signup_user_password(self):
+        # password blank
         data = {"username": "testuser", "password1": "", "password2": ""}
 
         expected_response = {
@@ -34,8 +35,44 @@ class AuthenticationTest(TestCase):
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == expected_response
 
-        data.update({"password1": "123", "password2": "123"})
+        # password doesn't match
+        data.update({"password1": "123#@456", "password2": "abckj@4569"})
+        expected_response = {
+            "non_field_errors": ["The two password fields didn't match."]
+        }
         response = self.client.post(
             path=self.signup_url, data=data, format="json"
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json() == expected_response
+
+        # password short and numeric
+        data.update({"password1": "123", "password2": "123"})
+        expected_response = {
+            "password1": [
+                "This password is too short. It must contain at least 8 characters.",
+                "This password is too common.",
+                "This password is entirely numeric.",
+            ]
+        }
+        response = self.client.post(
+            path=self.signup_url, data=data, format="json"
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json() == expected_response
+
+    def test_signup_user(self):
+        data = {
+            "username": "testuser",
+            "password1": "ARandomPassword@123",
+            "password2": "ARandomPassword@123",
+        }
+
+        response = self.client.post(
+            path=self.signup_url,
+            data=data,
+            format="json",
+            content_type="application/json",
+        )
+
+        assert response.status_code == status.HTTP_201_CREATED
