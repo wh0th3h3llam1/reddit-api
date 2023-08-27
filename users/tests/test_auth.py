@@ -61,7 +61,77 @@ class AuthenticationTest(TestCase):
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == expected_response
 
+    def test_signup_user_username(self):
+        data = {
+            "username": "test",
+            "password1": "ARandomPassword@123",
+            "password2": "ARandomPassword@123",
+        }
+
+        response = self.client.post(
+            path=self.signup_url,
+            data=data,
+            format="json",
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json()["username"] == [
+            "Username must have at least 5 characters"
+        ]
+
     def test_signup_user(self):
+        data = {
+            "username": "testuser",
+            "password1": "ARandomPassword@123",
+            "password2": "ARandomPassword@123",
+        }
+
+        response = self.client.post(
+            path=self.signup_url,
+            data=data,
+            format="json",
+            content_type="application/json",
+        )
+        assert response.status_code == status.HTTP_201_CREATED
+        assert "key" in response.json()
+        assert "username" in response.json()
+
+    def test_login_user_fail(self):
+        data = {}
+
+        response = self.client.post(
+            path=self.login_url,
+            data=data,
+            format="json",
+            content_type="application/json",
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json() == {"password": ["This field is required."]}
+
+        data = {"password": "pass"}
+        response = self.client.post(
+            path=self.login_url,
+            data=data,
+            format="json",
+            content_type="application/json",
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json()["non_field_errors"] == [
+            'Must include "username" and "password".'
+        ]
+
+        data = {"username": "user", "password": "pass"}
+        response = self.client.post(
+            path=self.login_url,
+            data=data,
+            format="json",
+            content_type="application/json",
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json()["non_field_errors"] == [
+            "Unable to log in with provided credentials."
+        ]
+
+    def test_login_user(self):
         data = {
             "username": "testuser",
             "password1": "ARandomPassword@123",
@@ -76,3 +146,14 @@ class AuthenticationTest(TestCase):
         )
 
         assert response.status_code == status.HTTP_201_CREATED
+
+        data = {"username": "testuser", "password": "ARandomPassword@123"}
+        response = self.client.post(
+            path=self.login_url,
+            data=data,
+            format="json",
+            content_type="application/json",
+        )
+        assert response.status_code == status.HTTP_200_OK
+        assert "key" in response.json()
+        assert "username" in response.json()
