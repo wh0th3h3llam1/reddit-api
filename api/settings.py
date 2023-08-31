@@ -204,6 +204,8 @@ DJOSER = {
 
 
 REST_AUTH = {
+    "TOKEN_SERIALIZER": "users.serializers.TokenSerializer",
+    "SESSION_LOGIN": False,
     "OLD_PASSWORD_FIELD_ENABLED": True,
     "LOGOUT_ON_PASSWORD_CHANGE": True,
 }
