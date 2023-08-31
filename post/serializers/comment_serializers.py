@@ -65,3 +65,9 @@ class CommentSerializer(DynamicFieldsModelSerializer):
     #         read_only=True,
     #     )
     #     return super(CommentSerializer, self).to_representation(instance)
+
+
+class CommentListSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = Comment
+        fields = "__all__"
