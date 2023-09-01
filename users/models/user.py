@@ -73,6 +73,10 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+    username_last_changed = models.DateTimeField(
+        verbose_name=_("Username Last Changed on"), blank=True, null=True
+    )
+
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
 
