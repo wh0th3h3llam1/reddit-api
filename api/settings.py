@@ -59,7 +59,6 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "django_extensions",
     "drf_spectacular",
-    "ckeditor",
 ]
 
 LOCAL_APPS = ["core", "post", "subreddit", "users"]
@@ -234,69 +233,3 @@ SHELL_PLUS_DONT_LOAD = [
 SHELL_PLUS_IMPORTS = [
     "from datetime import datetime, timedelta",
 ]
-
-CKEDITOR_CONFIGS = {
-    "default": {
-        "toolbar": "Reddit",
-        "toolbar_Reddit": [
-            {
-                "name": "basicstyles",
-                "items": [
-                    "Bold",
-                    "Italic",
-                    "Underline",
-                    "Strike",
-                    "Subscript",
-                    "Superscript",
-                    "-",
-                    "RemoveFormat",
-                ],
-            },
-            {
-                "name": "paragraph",
-                "items": [
-                    "NumberedList",
-                    "BulletedList",
-                    "-",
-                    "Outdent",
-                    "Indent",
-                    "-",
-                    "Blockquote",
-                    "CreateDiv",
-                    "-",
-                    "JustifyLeft",
-                    "JustifyCenter",
-                    "JustifyRight",
-                    "JustifyBlock",
-                ],
-            },
-            {
-                "name": "clipboard",
-                "items": [
-                    "Cut",
-                    "Copy",
-                    "Paste",
-                    "PasteText",
-                    "PasteFromWord",
-                    "-",
-                    "Undo",
-                    "Redo",
-                ],
-            },
-            {
-                "name": "styles",
-                "items": ["Styles", "Format", "Font", "FontSize"],
-            },
-            "/",  # put this to force next toolbar on new line
-            {
-                "name": "preview-maximize",
-                "items": [
-                    # put the name of your editor.ui.addButton here
-                    "Preview",
-                    "Maximize",
-                ],
-            },
-        ],
-        "width": "100%",
-    },
-}
