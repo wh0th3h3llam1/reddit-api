@@ -56,7 +56,6 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth",
     "dj_rest_auth.registration",
-    "djoser",
     "corsheaders",
     "django_extensions",
     "drf_spectacular",
@@ -192,14 +191,6 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {"anon": "200/hour"},
     "PAGE_SIZE": 25,
     "UPLOADED_FILES_USE_URL": True,
-}
-
-
-DJOSER = {
-    "SERIALIZERS": {
-        "current_user": "users.serializers.UserSerializer",
-        "user": "users.serializers.UserSerializer",
-    }
 }
 
 
