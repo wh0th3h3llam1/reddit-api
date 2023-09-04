@@ -59,6 +59,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "django_extensions",
     "drf_spectacular",
+    "django_elasticsearch_dsl",
 ]
 
 LOCAL_APPS = ["core", "post", "subreddit", "users"]
@@ -227,9 +228,18 @@ SPECTACULAR_SETTINGS = {
 
 
 SHELL_PLUS_DONT_LOAD = [
-    "django",
+    "admin",
+    "auth",
+    "contenttypes",
+    "sessions",
+    "authtoken",
+    "account",
+    "socialaccount",
 ]
 
 SHELL_PLUS_IMPORTS = [
     "from datetime import datetime, timedelta",
 ]
+
+
+ELASTICSEARCH_DSL = {"default": {"hosts": "localhost:9200"}}

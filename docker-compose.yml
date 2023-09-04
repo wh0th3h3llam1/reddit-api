@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    container_name: reddit_db
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  reddit_elasticsearch:
+    container_name: reddit_elasticsearch
+    image: elasticsearch:7.14.2
+    environment:
+      - discover.type=single-node
+    ports:
+      - "9200:9200"

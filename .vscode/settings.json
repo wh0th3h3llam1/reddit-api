@@ -31,7 +31,19 @@
         {
             "name": "rest_framework_nested",
             "depth": 3
-        }
+        },
+        {
+            "name": "elasticsearch",
+            "depth": 3
+        },
+        {
+            "name": "elasticsearch_dsl",
+            "depth": 3
+        },
+        {
+            "name": "django_elasticsearch_dsl",
+            "depth": 3
+        },
     ],
     "python.analysis.pylanceLspClientEnabled": true,
     "python.analysis.autoImportCompletions": true,
