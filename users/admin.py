@@ -29,5 +29,5 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ("created",)
 
 
-admin.site.register(Email, EmailAdmin)
+# admin.site.register(Email, EmailAdmin)
 admin.site.register(User, UserAdmin)

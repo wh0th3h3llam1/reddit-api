@@ -2,6 +2,9 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+
 from common.mixins import (
     SerializerActionClassMixin,
     PermissionActionClassMixin,
@@ -22,7 +25,17 @@ from post.serializers import (
 # Create your views here.
 
 
-@extend_schema(tags=["Posts"])
+@extend_schema(
+    tags=["Posts"],
+    parameters=[
+        OpenApiParameter(
+            name="subreddit_name",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.PATH,
+            required=True,
+        ),
+    ],
+)
 class PostViewSet(
     # MultipleLookupFieldMixin,
     PermissionActionClassMixin,
@@ -78,7 +91,23 @@ class PostViewSet(
     #     return Response(data=serializer.data, status=HTTP_200_OK)
 
 
-@extend_schema(tags=["Comments"])
+@extend_schema(
+    tags=["Comments"],
+    parameters=[
+        OpenApiParameter(
+            name="subreddit_name",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.PATH,
+            required=True,
+        ),
+        OpenApiParameter(
+            name="posts_slug",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.PATH,
+            required=True,
+        ),
+    ],
+)
 class CommentViewSet(PermissionActionClassMixin, ModelViewSet):
     queryset = Comment.objects.filter(parent__isnull=True)
     serializer_class = CommentSerializer
