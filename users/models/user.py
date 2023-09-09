@@ -92,7 +92,7 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _("Users")
 
     def __str__(self) -> str:
-        return f"{self.username}"
+        return self.username or self.email or self.id
 
     def clean(self) -> None:
         self.email = self.__class__.objects.normalize_email(self.email)

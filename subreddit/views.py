@@ -26,14 +26,22 @@ class SubredditViewSet(SerializerActionClassMixin, ModelViewSet):
     }
     lookup_field = "name"
 
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
 
 @extend_schema(
     tags=["Subreddit Links"],
     parameters=[
-        OpenApiParameter("subreddit_name", OpenApiTypes.STR, OpenApiParameter.PATH)
+        OpenApiParameter(
+            name="subreddit_name",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.PATH,
+            required=True,
+        ),
+        OpenApiParameter(
+            name="id",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.PATH,
+            required=False,
+        ),
     ],
 )
 class SubredditLinkViewSet(
@@ -43,6 +51,7 @@ class SubredditLinkViewSet(
     GenericViewSet,
 ):
     serializer_class = SubredditLinkSerializer
+    lookup_field = "id"
 
     def get_queryset(self):
         queryset = SubredditLink.objects.filter(
