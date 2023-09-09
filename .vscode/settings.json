@@ -45,7 +45,6 @@
             "depth": 3
         },
     ],
-    "python.analysis.pylanceLspClientEnabled": true,
     "python.analysis.autoImportCompletions": true,
     "python.analysis.indexing": true,
     "python.analysis.inlayHints.functionReturnTypes": true,
