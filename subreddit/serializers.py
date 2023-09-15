@@ -42,7 +42,9 @@ class SubredditDetailSerializer(DynamicFieldsModelSerializer):
 
     @extend_schema_field(OpenApiTypes.OBJECT)
     def get_links(self, instance: Subreddit):
-        return SubredditLinkSerializer(instance.links.all(), many=True).data
+        return SubredditLinkSerializer(
+            instance.links.all(), exclude=("subreddit",), many=True
+        ).data
 
     @extend_schema_field(OpenApiTypes.OBJECT)
     def get_moderators(self, instance: Subreddit):
