@@ -20,7 +20,6 @@ from users.serializers import (
     ChangeUsernameSerializer,
     UserAvatarSerializer,
     UserDetailSerializer,
-    UserSerializer,
     UserUpdateSerializer,
 )
 

@@ -72,7 +72,9 @@ class UserUpdateSerializer(DynamicFieldsModelSerializer):
 
 
 class ChangeUsernameSerializer(serializers.ModelSerializer):
-    confirm = serializers.BooleanField(required=False, default=False)
+    confirm = serializers.BooleanField(
+        required=False, default=False, write_only=True
+    )
     username_last_changed = serializers.HiddenField(default=timezone.now())
 
     def validate_username(self, username):
@@ -103,8 +105,28 @@ class ChangeUsernameSerializer(serializers.ModelSerializer):
 
 
 class UserAvatarSerializer(serializers.ModelSerializer):
-    avatar = serializers.ImageField(required=True)
+    avatar = serializers.ImageField(required=False, allow_empty_file=True)
+    remove = serializers.BooleanField(
+        required=False, default=False, write_only=True
+    )
 
     class Meta:
         model = User
-        fields = ("avatar",)
+        fields = ("avatar", "remove")
+
+    def validate(self, attrs: dict) -> dict:
+        remove = attrs.get("remove", False)
+        if remove is True:
+            attrs.pop("avatar", None)
+
+        return attrs
+
+    def update(self, instance, validated_data: dict):
+        remove = validated_data.pop("remove", False)
+
+        # Delete old image if exists
+        if remove:
+            instance.delete_avatar()
+            return instance
+
+        return super().update(instance, validated_data)
