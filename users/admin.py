@@ -21,9 +21,12 @@ class UserAdmin(BaseUserAdmin):
 
     fieldsets = FieldSets(
         none=("username", "password"),
-        personal_info=("email", "phone_number"),  # , "avatar"),
+        personal_info=("email", "phone_number", "avatar"),
         permissions=("is_active", "is_staff", "is_superuser"),
-        important_dates=("last_login",),
+        important_dates=(
+            "username_last_changed",
+            "last_login",
+        ),
     )
 
     readonly_fields = ("created",)

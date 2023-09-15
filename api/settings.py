@@ -233,3 +233,12 @@ SHELL_PLUS_DONT_LOAD = [
 SHELL_PLUS_IMPORTS = [
     "from datetime import datetime, timedelta",
 ]
+
+
+# Must be in days
+USERNAME_CHANGE_ALLOWED_AFTER = env.int(
+    "USERNAME_CHANGE_ALLOWED_AFTER", default=14
+)
+
+if USERNAME_CHANGE_ALLOWED_AFTER <= 1:
+    USERNAME_CHANGE_ALLOWED_AFTER = 14
