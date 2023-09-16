@@ -39,6 +39,7 @@ class SubredditDetailSerializer(DynamicFieldsModelSerializer):
     )
     moderators = serializers.SerializerMethodField()
     links = serializers.SerializerMethodField()
+    joined = serializers.SerializerMethodField()
 
     @extend_schema_field(OpenApiTypes.OBJECT)
     def get_links(self, instance: Subreddit):
@@ -54,6 +55,12 @@ class SubredditDetailSerializer(DynamicFieldsModelSerializer):
             read_only=True,
             fields=("user",),
         ).data
+
+    def get_joined(self, instance: Subreddit) -> bool:
+        user = self.context.get("request").user
+        if user.is_authenticated:
+            return instance.joined_users.filter(user=user).exists()
+        return False
 
     class Meta:
         model = Subreddit
