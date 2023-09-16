@@ -18,7 +18,9 @@ from subreddit.serializers import (
 
 @extend_schema(tags=["Subreddit"])
 class SubredditViewSet(SerializerActionClassMixin, ModelViewSet):
-    queryset = Subreddit.objects.all()
+    queryset = Subreddit.objects.prefetch_related(
+        "joined_users", "links", "moderators"
+    ).all()
     serializer_class = SubredditCreateUpdateSerializer
     serializer_action_classes = {
         "list": SubredditListSerializer,
