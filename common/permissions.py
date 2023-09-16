@@ -1,6 +1,6 @@
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from post.models import Comment, Post
+from post.models import Comment
 from subreddit.models import SubredditUser
 
 
@@ -8,8 +8,9 @@ class IsSubredditOwnerOrModerator(IsAuthenticatedOrReadOnly):
     message = "Not allowed"
 
     def has_permission(self, request, view):
-        if super().has_permission(request, view):
-            path = list(filter(lambda x: x, request.stream.path.split("/")))
+        return False
+        # if super().has_permission(request, view):
+        #     path = list(filter(lambda x: x, request.stream.path.split("/")))
 
 
 class IsSubredditMember(IsAuthenticatedOrReadOnly):
@@ -17,77 +18,45 @@ class IsSubredditMember(IsAuthenticatedOrReadOnly):
 
     def has_permission(self, request, view):
         if super().has_permission(request, view):
-            subreddit_id = request.data.get("subreddit", None)
+            subreddit = request.path.rsplit("/api/r/")[-1].split("/")[0]
 
-            if subreddit_id is None:
+            if not subreddit:
                 return False
 
             return bool(
                 SubredditUser.objects.filter(
-                    user=request.user, subreddit_id=subreddit_id
+                    user=request.user, subreddit__name=subreddit
                 ).exists()
             )
 
         return False
 
-    def has_object_permission(self, request, view, obj):
-        if obj:
-            return False
-        return
-
 
 class IsPostLocked(IsAuthenticatedOrReadOnly):
     message = "Cannot edit locked posts"
 
-    def has_object_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
         # check if post is locked
-        post_id = request.data.get("post", None)
-        if post_id is None:
-            return False
-
-        try:
-            is_post_locked = Post.objects.get(id=post_id).locked
-            return False if is_post_locked else True
-        except Post.DoesNotExist:
-            return False
+        if super().has_object_permission(request, view, obj):
+            return bool(not obj.locked)
+        return False
 
 
-class IsCommentLocked(IsPostLocked):
+class IsCommentLocked(IsAuthenticatedOrReadOnly):
     message = "Comment thread is locked"
 
-    # def has_permission(self, request, view):
-    #     if super().has_permission(request, view):
-    #         # Check if any of the comment is locked
-
-    #         # Check if any of the parent comment is locked
-
-    #         parent_id = request.data.get("parent", None)
-    #         if request.method == "POST":
-    #             if parent_id is None:
-    #                 return True
-    #         else:
-    #             url_path = list(
-    #                 filter(lambda x: x, request.stream.path.split("/"))
-    #             )
-    #             comment_id = url_path[-1]
-    #             comment = Comment.objects.get(id=comment_id)
-    #             all_parents = comment.get_all_parents()
-    #             parents_lock_status = set(
-    #                 list(
-    #                     Comment.objects.filter(id__in=all_parents).values_list(
-    #                         "locked", flat=True
-    #                     )
-    #                 )
-    #             )
-
-    #             if any(parents_lock_status):
-    #                 return False
-    #             else:
-    #                 return True
-
-    #         return False
-
-    #     return False
-
     def has_object_permission(self, request, view, obj):
+        if super().has_object_permission(request, view, obj):
+            parents = obj.get_all_parents()
+            is_thread_locked = Comment.objects.filter(
+                id__in=parents, locked=True
+            ).exists()
+            return not is_thread_locked
+        return False
+
+
+class IsUserTheOwner(IsAuthenticatedOrReadOnly):
+    def has_object_permission(self, request, view, obj):
+        if super().has_object_permission(request, view, obj):
+            return obj.user == request.user
         return False

@@ -13,11 +13,12 @@ from common.permissions import (
     IsCommentLocked,
     IsPostLocked,
     IsSubredditMember,
-    IsSubredditOwnerOrModerator,
+    IsUserTheOwner,
 )
 from post.models import Comment, Post
 from post.serializers import (
     CommentSerializer,
+    CommentCreateSerializer,
     PostCreateUpdateSerializer,
     PostDetailSerializer,
 )
@@ -51,9 +52,9 @@ class PostViewSet(
     # lookup_fields = ("slug", "id", "pk")
     permission_classes = (IsAuthenticatedOrReadOnly,)
     permission_action_classes = {
-        # "create": (IsSubredditMember,),
-        "update": ((IsPostLocked | IsSubredditOwnerOrModerator),),
-        "partial_update": ((IsPostLocked | IsSubredditOwnerOrModerator),),
+        "create": (IsSubredditMember,),
+        "update": (IsUserTheOwner, IsPostLocked),
+        "partial_update": (IsUserTheOwner, IsPostLocked),
     }
 
     def get_queryset(self):
@@ -108,12 +109,28 @@ class PostViewSet(
         ),
     ],
 )
-class CommentViewSet(PermissionActionClassMixin, ModelViewSet):
-    queryset = Comment.objects.filter(parent__isnull=True)
+class CommentViewSet(
+    PermissionActionClassMixin, SerializerActionClassMixin, ModelViewSet
+):
     serializer_class = CommentSerializer
+    serializer_action_classes = {"create": CommentCreateSerializer}
     permission_classes = (IsAuthenticatedOrReadOnly,)
     permission_action_classes = {
-        "create": ((IsCommentLocked | IsSubredditMember),),
-        "update": (IsCommentLocked,),
-        "partial_update": (IsCommentLocked,),
+        "create": (IsCommentLocked,),
+        "update": (
+            IsUserTheOwner,
+            IsCommentLocked,
+        ),
+        "partial_update": (
+            IsUserTheOwner,
+            IsCommentLocked,
+        ),
     }
+
+    def get_queryset(self):
+        queryset = Comment.objects.prefetch_related("children").all()
+
+        if self.action == "list":
+            queryset = queryset.filter(parent__isnull=True)
+
+        return queryset
