@@ -128,14 +128,14 @@ class Comment(LifecycleModelMixin, BaseModel):
             self.locked = True
             self.locked_at = timezone.now()
 
-    def get_all_parents(self):
+    def get_all_parents(self) -> list[int]:
         comments = []
         comment = self
         comments.append(self.pk)
         while True:
             if comment.parent is None:
                 break
-            comments.append(comment.id)
+            comments.append(comment.parent.id)
             comment = comment.parent
 
         return comments

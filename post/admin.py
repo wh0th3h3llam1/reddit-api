@@ -62,7 +62,7 @@ class PostAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("post", "get_text", "parent", "locked")
+    list_display = ("__str__", "post", "get_text", "parent", "locked")
     list_filter = ("post", "locked")
     actions = ("lock_comments", "unlock_comments")
 
