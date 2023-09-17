@@ -64,6 +64,9 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
         ),
     )
 
+    deactivated_on = models.DateTimeField(
+        verbose_name=_("Deactivated On"), blank=True, null=True
+    )
     is_active = models.BooleanField(
         verbose_name=_("Active"),
         default=True,
