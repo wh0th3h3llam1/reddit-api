@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.generics import RetrieveAPIView
@@ -20,7 +21,6 @@ from users.serializers import (
     ChangeUsernameSerializer,
     UserAvatarSerializer,
     UserDetailSerializer,
-    UserSerializer,
     UserUpdateSerializer,
 )
 
@@ -32,9 +32,10 @@ class UserViewSet(
     SerializerActionClassMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     GenericViewSet,
 ):
-    queryset = User.objects.all()
+    queryset = User.objects.filter(is_active=False)
     serializer_class = UserUpdateSerializer
     serializer_action_classes = {
         "avatar": UserAvatarSerializer,
@@ -46,6 +47,11 @@ class UserViewSet(
 
     # filter_backends = (DjangoFilterBackend,)
     # filterset_class = UserHomeFeedFilterSet
+
+    def perform_destroy(self, instance: User) -> None:
+        instance.is_active = False
+        instance.deactivated_on = timezone.now()
+        instance.save()
 
     @action(methods=["POST"], detail=True)
     def avatar(self, request, *args, **kwargs):

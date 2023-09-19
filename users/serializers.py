@@ -1,8 +1,11 @@
+from django.conf import settings
 from django.utils import timezone
 
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
+from common.constants import FieldConstants
+from common.utils import get_timedelta
 from core.serializers import DynamicFieldsModelSerializer
 from users.models import User
 
@@ -72,7 +75,9 @@ class UserUpdateSerializer(DynamicFieldsModelSerializer):
 
 
 class ChangeUsernameSerializer(serializers.ModelSerializer):
-    confirm = serializers.BooleanField(required=False, default=False)
+    confirm = serializers.BooleanField(
+        required=False, default=False, write_only=True
+    )
     username_last_changed = serializers.HiddenField(default=timezone.now())
 
     def validate_username(self, username):
@@ -85,15 +90,22 @@ class ChangeUsernameSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Confirm username change")
         return confirm
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict) -> dict:
         last_changed = self.instance.username_last_changed
 
+        time_delta = get_timedelta(settings.USERNAME_CHANGE_ALLOWED_AFTER)
         if (
             last_changed is not None
-            and last_changed > timezone.now() - timezone.timedelta(days=14)
+            and last_changed > timezone.now() - time_delta
         ):
+            change_after = last_changed + time_delta
             raise serializers.ValidationError(
-                "You can't change username for at least 14 days after changing once."
+                detail=(
+                    f"You must wait for at least {settings.USERNAME_CHANGE_ALLOWED_AFTER} "
+                    "days before changing username again. Try again after "
+                    f"{change_after.strftime(FieldConstants.ALMOST_FULL_DATE_TIME_FORMAT)}"
+                ),
+                code="insufficient_time_before_username_change",
             )
         return attrs
 
@@ -103,8 +115,28 @@ class ChangeUsernameSerializer(serializers.ModelSerializer):
 
 
 class UserAvatarSerializer(serializers.ModelSerializer):
-    avatar = serializers.ImageField(required=True)
+    avatar = serializers.ImageField(required=False, allow_empty_file=True)
+    remove = serializers.BooleanField(
+        required=False, default=False, write_only=True
+    )
 
     class Meta:
         model = User
-        fields = ("avatar",)
+        fields = ("avatar", "remove")
+
+    def validate(self, attrs: dict) -> dict:
+        remove = attrs.get("remove", False)
+        if remove is True:
+            attrs.pop("avatar", None)
+
+        return attrs
+
+    def update(self, instance, validated_data: dict):
+        remove = validated_data.pop("remove", False)
+
+        # Delete old image if exists
+        if remove:
+            instance.delete_avatar()
+            return instance
+
+        return super().update(instance, validated_data)

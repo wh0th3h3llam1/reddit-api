@@ -64,6 +64,7 @@ class Subreddit(LifecycleModelMixin, BaseModel):
     # )
     # moderators = models.ManyToManyField(to=User, through="Moderator")
 
+    joined_users: Manager["SubredditUser"]
     moderators: Manager["Moderator"]
     links: Manager["SubredditLink"]
     posts: Manager["Post"]

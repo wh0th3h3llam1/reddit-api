@@ -46,6 +46,7 @@ class PostDetailSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Post
         fields = (
+            "id",
             "slug",
             "title",
             "body",

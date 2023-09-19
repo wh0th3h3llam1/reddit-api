@@ -62,6 +62,14 @@ user_router = routers.SimpleRouter()
 user_router.register(prefix="u", viewset=UserViewSet, basename="users")
 
 
+router_urls = [
+    path("", include(user_router.urls)),
+    path("", include(router.urls)),
+    path("", include(post_router.urls)),
+    path("", include(comment_router.urls)),
+    path("", include(subreddit_link_router.urls)),
+]
+
 dj_rest_auth_urls = [
     # URLs that do not require a session or valid token
     path(
@@ -74,6 +82,7 @@ dj_rest_auth_urls = [
         PasswordResetConfirmView.as_view(),
         name="rest_password_reset_confirm",
     ),
+    path("signup/", include("dj_rest_auth.registration.urls")),
     path("login/", LoginView.as_view(), name="rest_login"),
     # URLs that require a user to be logged in with a valid session / token.
     path("logout/", LogoutView.as_view(), name="rest_logout"),
@@ -88,12 +97,7 @@ dj_rest_auth_urls = [
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include(dj_rest_auth_urls)),
-    path("auth/signup/", include("dj_rest_auth.registration.urls")),
-    path("api/", include(user_router.urls)),
-    path("api/", include(router.urls)),
-    path("api/", include(post_router.urls)),
-    path("api/", include(comment_router.urls)),
-    path("api/", include(subreddit_link_router.urls)),
+    path("api/", include(router_urls)),
 ]
 
 urlpatterns += [
