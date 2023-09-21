@@ -30,6 +30,7 @@ class SubredditListSerializer(DynamicFieldsModelSerializer):
             "name",
             "display_name",
         )
+        read_only_fields = fields
 
 
 class SubredditDetailSerializer(DynamicFieldsModelSerializer):
@@ -64,19 +65,31 @@ class SubredditDetailSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Subreddit
-        exclude = (
-            "modified",
-            "max_pinned_posts",
-            "max_pinned_comments",
-            "comments_locked_by_default",
+        fields = (
+            "owner",
+            "name",
+            "display_name",
+            "description",
+            "about",
+            "nsfw",
+            "image",
+            "cover_picture",
+            "moderators_count",
+            "moderators",
+            "links",
+            "joined",
+            "created",
         )
+        read_only_fields = fields
 
 
 class SubredditCreateUpdateSerializer(
     SerializerCreateUpdateOnlyMixin, DynamicFieldsModelSerializer
 ):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    links = serializers.ListField(required=False, allow_empty=False)
+    links = serializers.ListField(
+        required=False, allow_empty=False, write_only=True
+    )
 
     class Meta:
         model = Subreddit
@@ -96,8 +109,8 @@ class SubredditCreateUpdateSerializer(
 
         return instance
 
-    def update(self, instance, validated_data):
-        subreddit_links = validated_data.pop("links")
+    def update(self, instance, validated_data: dict):
+        subreddit_links: list = validated_data.pop("links", [])
         self._validate_subreddit_links(subreddit_links)
 
         instance = super().update(instance, validated_data)
@@ -108,7 +121,10 @@ class SubredditCreateUpdateSerializer(
 
         return instance
 
-    def _validate_subreddit_links(self, links):
+    def _validate_subreddit_links(self, links: list):
+        if not links:
+            return
+
         serializer = SubredditLinkSerializer(
             data=links, exclude=("subreddit",), many=True
         )

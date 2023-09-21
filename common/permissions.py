@@ -5,12 +5,12 @@ from subreddit.models import SubredditUser
 
 
 class IsSubredditOwnerOrModerator(IsAuthenticatedOrReadOnly):
-    message = "Not allowed"
-
-    def has_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
+        if super().has_object_permission(request, view, obj):
+            return obj.owner.id in list(
+                obj.moderators.values_list("id", flat=True)
+            )
         return False
-        # if super().has_permission(request, view):
-        #     path = list(filter(lambda x: x, request.stream.path.split("/")))
 
 
 class IsSubredditMember(IsAuthenticatedOrReadOnly):
@@ -58,5 +58,8 @@ class IsCommentLocked(IsAuthenticatedOrReadOnly):
 class IsUserTheOwner(IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
         if super().has_object_permission(request, view, obj):
-            return obj.user == request.user
+            if hasattr(obj, "user"):
+                return obj.user == request.user
+            if hasattr(obj, "owner"):
+                return obj.owner == request.user
         return False
