@@ -64,6 +64,9 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
         ),
     )
 
+    deactivated_on = models.DateTimeField(
+        verbose_name=_("Deactivated On"), blank=True, null=True
+    )
     is_active = models.BooleanField(
         verbose_name=_("Active"),
         default=True,
@@ -72,6 +75,10 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     )
 
     objects = UserManager()
+
+    username_last_changed = models.DateTimeField(
+        verbose_name=_("Username Last Changed on"), blank=True, null=True
+    )
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
@@ -88,10 +95,26 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _("Users")
 
     def __str__(self) -> str:
-        return f"{self.username}"
+        return self.username or self.email or self.id
 
     def clean(self) -> None:
         self.email = self.__class__.objects.normalize_email(self.email)
+
+    @property
+    def is_avatar_default(self) -> bool:
+        return get_default_avatar_path() in self.avatar.name
+
+    def _set_default_avatar(self):
+        self.avatar = get_default_avatar_path()
+        self.save()
+
+    def _delete_avatar(self):
+        self.avatar.delete()
+
+    def delete_avatar(self):
+        if self.avatar and not self.is_avatar_default:
+            self._delete_avatar()
+            self._set_default_avatar()
 
 
 class Email(BaseModel):

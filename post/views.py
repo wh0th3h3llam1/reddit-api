@@ -2,6 +2,9 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+
 from common.mixins import (
     SerializerActionClassMixin,
     PermissionActionClassMixin,
@@ -10,11 +13,12 @@ from common.permissions import (
     IsCommentLocked,
     IsPostLocked,
     IsSubredditMember,
-    IsSubredditOwnerOrModerator,
+    IsUserTheOwner,
 )
 from post.models import Comment, Post
 from post.serializers import (
     CommentSerializer,
+    CommentCreateSerializer,
     PostCreateUpdateSerializer,
     PostDetailSerializer,
 )
@@ -22,7 +26,17 @@ from post.serializers import (
 # Create your views here.
 
 
-@extend_schema(tags=["Posts"])
+@extend_schema(
+    tags=["Posts"],
+    parameters=[
+        OpenApiParameter(
+            name="subreddit_name",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.PATH,
+            required=True,
+        ),
+    ],
+)
 class PostViewSet(
     # MultipleLookupFieldMixin,
     PermissionActionClassMixin,
@@ -38,9 +52,10 @@ class PostViewSet(
     # lookup_fields = ("slug", "id", "pk")
     permission_classes = (IsAuthenticatedOrReadOnly,)
     permission_action_classes = {
-        # "create": (IsSubredditMember,),
-        "update": ((IsPostLocked | IsSubredditOwnerOrModerator),),
-        "partial_update": ((IsPostLocked | IsSubredditOwnerOrModerator),),
+        "create": (IsSubredditMember,),
+        "update": (IsUserTheOwner, IsPostLocked),
+        "partial_update": (IsUserTheOwner, IsPostLocked),
+        "destroy": (IsUserTheOwner,),
     }
 
     def get_queryset(self):
@@ -78,13 +93,40 @@ class PostViewSet(
     #     return Response(data=serializer.data, status=HTTP_200_OK)
 
 
-@extend_schema(tags=["Comments"])
-class CommentViewSet(PermissionActionClassMixin, ModelViewSet):
-    queryset = Comment.objects.filter(parent__isnull=True)
+@extend_schema(
+    tags=["Comments"],
+    parameters=[
+        OpenApiParameter(
+            name="subreddit_name",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.PATH,
+            required=True,
+        ),
+        OpenApiParameter(
+            name="posts_slug",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.PATH,
+            required=True,
+        ),
+    ],
+)
+class CommentViewSet(
+    PermissionActionClassMixin, SerializerActionClassMixin, ModelViewSet
+):
     serializer_class = CommentSerializer
+    serializer_action_classes = {"create": CommentCreateSerializer}
     permission_classes = (IsAuthenticatedOrReadOnly,)
     permission_action_classes = {
-        "create": ((IsCommentLocked | IsSubredditMember),),
-        "update": (IsCommentLocked,),
-        "partial_update": (IsCommentLocked,),
+        "create": (IsCommentLocked,),
+        "update": (IsUserTheOwner, IsCommentLocked),
+        "partial_update": (IsUserTheOwner, IsCommentLocked),
+        "destroy": (IsUserTheOwner,),
     }
+
+    def get_queryset(self):
+        queryset = Comment.objects.prefetch_related("children").all()
+
+        if self.action == "list":
+            queryset = queryset.filter(parent__isnull=True)
+
+        return queryset

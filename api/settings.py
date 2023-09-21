@@ -56,11 +56,9 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth",
     "dj_rest_auth.registration",
-    "djoser",
     "corsheaders",
     "django_extensions",
     "drf_spectacular",
-    "ckeditor",
 ]
 
 LOCAL_APPS = ["core", "post", "subreddit", "users"]
@@ -195,14 +193,6 @@ REST_FRAMEWORK = {
 }
 
 
-DJOSER = {
-    "SERIALIZERS": {
-        "current_user": "users.serializers.UserSerializer",
-        "user": "users.serializers.UserSerializer",
-    }
-}
-
-
 REST_AUTH = {
     "TOKEN_SERIALIZER": "users.serializers.TokenSerializer",
     "SESSION_LOGIN": False,
@@ -244,68 +234,11 @@ SHELL_PLUS_IMPORTS = [
     "from datetime import datetime, timedelta",
 ]
 
-CKEDITOR_CONFIGS = {
-    "default": {
-        "toolbar": "Reddit",
-        "toolbar_Reddit": [
-            {
-                "name": "basicstyles",
-                "items": [
-                    "Bold",
-                    "Italic",
-                    "Underline",
-                    "Strike",
-                    "Subscript",
-                    "Superscript",
-                    "-",
-                    "RemoveFormat",
-                ],
-            },
-            {
-                "name": "paragraph",
-                "items": [
-                    "NumberedList",
-                    "BulletedList",
-                    "-",
-                    "Outdent",
-                    "Indent",
-                    "-",
-                    "Blockquote",
-                    "CreateDiv",
-                    "-",
-                    "JustifyLeft",
-                    "JustifyCenter",
-                    "JustifyRight",
-                    "JustifyBlock",
-                ],
-            },
-            {
-                "name": "clipboard",
-                "items": [
-                    "Cut",
-                    "Copy",
-                    "Paste",
-                    "PasteText",
-                    "PasteFromWord",
-                    "-",
-                    "Undo",
-                    "Redo",
-                ],
-            },
-            {
-                "name": "styles",
-                "items": ["Styles", "Format", "Font", "FontSize"],
-            },
-            "/",  # put this to force next toolbar on new line
-            {
-                "name": "preview-maximize",
-                "items": [
-                    # put the name of your editor.ui.addButton here
-                    "Preview",
-                    "Maximize",
-                ],
-            },
-        ],
-        "width": "100%",
-    },
-}
+
+# Must be in days
+USERNAME_CHANGE_ALLOWED_AFTER = env.int(
+    "USERNAME_CHANGE_ALLOWED_AFTER", default=14
+)
+
+if USERNAME_CHANGE_ALLOWED_AFTER <= 1:
+    USERNAME_CHANGE_ALLOWED_AFTER = 14

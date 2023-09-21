@@ -65,3 +65,17 @@ class CommentSerializer(DynamicFieldsModelSerializer):
     #         read_only=True,
     #     )
     #     return super(CommentSerializer, self).to_representation(instance)
+
+
+class CommentListSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+
+class CommentCreateSerializer(DynamicFieldsModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Comment
+        fields = ("user", "parent", "text", "post")

@@ -6,7 +6,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from ckeditor.fields import RichTextField
 from django_lifecycle import BEFORE_CREATE, LifecycleModelMixin, hook
 
 from common.choices import POST_TYPES
@@ -30,7 +29,7 @@ class Post(BaseModel):
         to=Subreddit, on_delete=models.CASCADE, related_name="posts"
     )
     title = models.CharField(max_length=200)
-    body = RichTextField(blank=True, null=True)
+    body = models.TextField(blank=True, null=True)
     slug = models.SlugField(verbose_name=_("Post Slug"))
 
     post_type = models.CharField(max_length=8, choices=POST_TYPES)
@@ -86,7 +85,7 @@ class Comment(LifecycleModelMixin, BaseModel):
         blank=True,
         null=True,
     )
-    text = RichTextField()
+    text = models.TextField()
 
     edited_at = models.DateTimeField(
         verbose_name=_("Comment edited at"), blank=True, null=True
@@ -129,14 +128,14 @@ class Comment(LifecycleModelMixin, BaseModel):
             self.locked = True
             self.locked_at = timezone.now()
 
-    def get_all_parents(self):
+    def get_all_parents(self) -> list[int]:
         comments = []
         comment = self
         comments.append(self.pk)
         while True:
             if comment.parent is None:
                 break
-            comments.append(comment.id)
+            comments.append(comment.parent.id)
             comment = comment.parent
 
         return comments

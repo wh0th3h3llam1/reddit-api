@@ -1,5 +1,7 @@
+from django.utils import timezone
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
@@ -15,7 +17,12 @@ from post.serializers.post_serializers import PostListSerializer
 
 # from users.filters import UserHomeFeedFilterSet
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import (
+    ChangeUsernameSerializer,
+    UserAvatarSerializer,
+    UserDetailSerializer,
+    UserUpdateSerializer,
+)
 
 # Create your views here.
 
@@ -23,18 +30,48 @@ from users.serializers import UserSerializer
 @extend_schema(tags=["Users"])
 class UserViewSet(
     SerializerActionClassMixin,
-    mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     GenericViewSet,
 ):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    serializer_action_classes = {"feed": PostListSerializer}
+    queryset = User.objects.filter(is_active=False)
+    serializer_class = UserUpdateSerializer
+    serializer_action_classes = {
+        "avatar": UserAvatarSerializer,
+        "change_username": ChangeUsernameSerializer,
+        "retrieve": UserDetailSerializer,
+        "feed": PostListSerializer,
+    }
     lookup_field = "username"
 
     # filter_backends = (DjangoFilterBackend,)
     # filterset_class = UserHomeFeedFilterSet
+
+    def perform_destroy(self, instance: User) -> None:
+        instance.is_active = False
+        instance.deactivated_on = timezone.now()
+        instance.save()
+
+    @action(methods=["POST"], detail=True)
+    def avatar(self, request, *args, **kwargs):
+        serializer = self.get_serializer_class()(
+            data=request.data, instance=request.user
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(data=serializer.data, status=HTTP_200_OK)
+
+    @action(methods=["POST"], detail=True)
+    def change_username(self, request, *args, **kwargs):
+        serializer = self.get_serializer_class()(
+            data=request.data, instance=request.user
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(data=serializer.data, status=HTTP_200_OK)
 
     @action(
         methods=["GET"], detail=False, permission_classes=(IsAuthenticated,)
@@ -95,3 +132,14 @@ class UserViewSet(
 
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
+
+
+class UserDetailView(RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserDetailSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    def get_queryset(self):
+        return User.objects.none()

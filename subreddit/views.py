@@ -4,7 +4,8 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 
-from common.mixins import SerializerActionClassMixin
+from common.mixins import PermissionActionClassMixin, SerializerActionClassMixin
+from common.permissions import IsSubredditOwnerOrModerator, IsUserTheOwner
 from subreddit.models import Subreddit, SubredditLink
 from subreddit.serializers import (
     SubredditCreateUpdateSerializer,
@@ -17,23 +18,40 @@ from subreddit.serializers import (
 
 
 @extend_schema(tags=["Subreddit"])
-class SubredditViewSet(SerializerActionClassMixin, ModelViewSet):
-    queryset = Subreddit.objects.all()
+class SubredditViewSet(
+    PermissionActionClassMixin, SerializerActionClassMixin, ModelViewSet
+):
+    queryset = Subreddit.objects.prefetch_related(
+        "joined_users", "links", "moderators"
+    ).all()
     serializer_class = SubredditCreateUpdateSerializer
     serializer_action_classes = {
         "list": SubredditListSerializer,
         "retrieve": SubredditDetailSerializer,
     }
+    permission_action_classes = {
+        "update": ((IsUserTheOwner | IsSubredditOwnerOrModerator),),
+        "partial_update": ((IsUserTheOwner | IsSubredditOwnerOrModerator),),
+        "destroy": (IsUserTheOwner,),
+    }
     lookup_field = "name"
-
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
 
 
 @extend_schema(
     tags=["Subreddit Links"],
     parameters=[
-        OpenApiParameter("subreddit_name", OpenApiTypes.STR, OpenApiParameter.PATH)
+        OpenApiParameter(
+            name="subreddit_name",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.PATH,
+            required=True,
+        ),
+        OpenApiParameter(
+            name="id",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.PATH,
+            required=False,
+        ),
     ],
 )
 class SubredditLinkViewSet(
@@ -43,6 +61,7 @@ class SubredditLinkViewSet(
     GenericViewSet,
 ):
     serializer_class = SubredditLinkSerializer
+    lookup_field = "id"
 
     def get_queryset(self):
         queryset = SubredditLink.objects.filter(
