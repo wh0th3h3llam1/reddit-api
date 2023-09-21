@@ -55,6 +55,7 @@ class PostViewSet(
         "create": (IsSubredditMember,),
         "update": (IsUserTheOwner, IsPostLocked),
         "partial_update": (IsUserTheOwner, IsPostLocked),
+        "destroy": (IsUserTheOwner,),
     }
 
     def get_queryset(self):
@@ -117,14 +118,9 @@ class CommentViewSet(
     permission_classes = (IsAuthenticatedOrReadOnly,)
     permission_action_classes = {
         "create": (IsCommentLocked,),
-        "update": (
-            IsUserTheOwner,
-            IsCommentLocked,
-        ),
-        "partial_update": (
-            IsUserTheOwner,
-            IsCommentLocked,
-        ),
+        "update": (IsUserTheOwner, IsCommentLocked),
+        "partial_update": (IsUserTheOwner, IsCommentLocked),
+        "destroy": (IsUserTheOwner,),
     }
 
     def get_queryset(self):
