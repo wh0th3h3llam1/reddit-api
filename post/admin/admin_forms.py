@@ -1,6 +1,21 @@
 from django import forms
 
-from post.models import Comment
+from post.models import Comment, Post
+from post.utils import make_post_slug
+
+
+class PostAdminForm(forms.ModelForm):
+    def clean(self):
+        if self.instance is None:
+            title = self.cleaned_data["title"]
+            slug = make_post_slug(title)
+            self.cleaned_data["slug"] = slug
+
+        return self.cleaned_data
+
+    class Meta:
+        model = Post
+        fields = "__all__"
 
 
 class CommentAdminForm(forms.ModelForm):

@@ -6,6 +6,7 @@ from rest_framework import serializers
 from common.mixins import SerializerCreateUpdateOnlyMixin
 from core.serializers import DynamicFieldsModelSerializer
 from post.models import Post
+from post.utils import make_post_slug
 from subreddit.serializers import SubredditListSerializer
 from users.serializers import UserSerializer
 
@@ -71,20 +72,9 @@ class PostCreateUpdateSerializer(
         attrs.pop("slug", None)
 
         if self.instance is None:
-            title = attrs.get("title", None)
+            title = attrs.get("title")
 
-            slug = slugify(title)
-            if self.Meta.model.objects.filter(slug=slug).exists():
-                while True:
-                    random = uuid4().hex[:6]
-                    if self.Meta.model.objects.filter(
-                        slug=f"{slug}_{random}"
-                    ).exists():
-                        continue
-                    else:
-                        slug += f"_{random}"
-                        break
-            attrs["slug"] = slug
+            attrs["slug"] = make_post_slug(title)
 
         return attrs
 

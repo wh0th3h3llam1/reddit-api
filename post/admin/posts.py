@@ -3,6 +3,7 @@ from django.http.request import HttpRequest
 from django.utils import timezone
 from django.utils.translation import ngettext
 
+from post.admin.admin_forms import PostAdminForm
 from post.models import Post
 
 # Register your models here.
@@ -12,6 +13,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "slug", "post_type", "locked")
     list_filter = ("post_type", "locked")
     actions = ("lock_posts", "unlock_posts")
+    form = PostAdminForm
 
     def get_prepopulated_fields(self, request, obj):
         prepoulated_fields = super().get_prepopulated_fields(request, obj)
