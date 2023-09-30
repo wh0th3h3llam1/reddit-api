@@ -76,6 +76,18 @@ class CommentListSerializer(DynamicFieldsModelSerializer):
 class CommentCreateSerializer(DynamicFieldsModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
+    def validate(self, attrs: dict) -> dict:
+        parent = attrs.get("parent", None)
+        post = attrs.get("post")
+
+        if parent is not None:
+            if not Comment.objects.filter(id=parent.id, post=post).exists():
+                raise serializers.ValidationError(
+                    "Parent Comment doesn't belong to the Post"
+                )
+
+        return attrs
+
     class Meta:
         model = Comment
         fields = ("user", "parent", "text", "post")
