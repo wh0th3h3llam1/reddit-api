@@ -31,6 +31,16 @@
         {
             "name": "rest_framework_nested",
             "depth": 3
+        },
+        {
+            "name": "channels",
+            "depth": 4,
+            "includeAllSymbols": true
+        },
+        {
+            "name": "channels_redis",
+            "depth": 3,
+            "includeAllSymbols": true
         }
     ],
     "python.analysis.autoImportCompletions": true,

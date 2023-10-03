@@ -28,3 +28,9 @@ class PostType:
     @classmethod
     def values(self) -> list[str]:
         return [self.TEXT, self.IMAGE, self.LINK, self.VIDEO]
+
+
+class ThreadType:
+    PRIVATE = "private"
+    GROUP = "group"
+    CHANNEL = "channel"

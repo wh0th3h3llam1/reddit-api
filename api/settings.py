@@ -57,6 +57,7 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "corsheaders",
+    "channels",
     "django_extensions",
     "drf_spectacular",
 ]
@@ -97,6 +98,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "api.wsgi.application"
+# ASGI_APPLICATION = "api.asgi.application"
 
 
 # Database
@@ -242,3 +244,15 @@ USERNAME_CHANGE_ALLOWED_AFTER = env.int(
 
 if USERNAME_CHANGE_ALLOWED_AFTER <= 1:
     USERNAME_CHANGE_ALLOWED_AFTER = 14
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                ("127.0.0.1", 6379),
+            ],
+        },
+    },
+}

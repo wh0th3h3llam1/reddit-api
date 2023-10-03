@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 
 from model_utils.choices import Choices
 
-from common.constants import PostType
+from common.constants import PostType, ThreadType
 
 
 POST_TYPES = Choices(
@@ -17,4 +17,11 @@ FEED_TYPES = Choices(
     ("subscribed", "Subscribed"),
     ("popular", "Popular"),
     ("all", "All"),
+)
+
+
+THREAD_TYPES = Choices(
+    (ThreadType.PRIVATE, "Private"),
+    (ThreadType.GROUP, "Group"),
+    (ThreadType.CHANNEL, "Channel"),
 )
