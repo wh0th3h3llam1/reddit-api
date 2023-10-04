@@ -2,7 +2,10 @@ from django.utils import timezone
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.generics import RetrieveAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.viewsets import GenericViewSet
@@ -11,7 +14,8 @@ from rest_framework.viewsets import GenericViewSet
 from drf_spectacular.utils import extend_schema
 
 from common.constants import PostType
-from common.mixins import SerializerActionClassMixin
+from common.mixins import PermissionActionClassMixin, SerializerActionClassMixin
+from common.permissions import IsUserTheOwner
 from post.models import Post
 from post.serializers.post_serializers import PostListSerializer
 
@@ -29,19 +33,25 @@ from users.serializers import (
 
 @extend_schema(tags=["Users"])
 class UserViewSet(
+    PermissionActionClassMixin,
     SerializerActionClassMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     GenericViewSet,
 ):
-    queryset = User.objects.filter(is_active=False)
+    queryset = User.active.all()
     serializer_class = UserUpdateSerializer
     serializer_action_classes = {
         "avatar": UserAvatarSerializer,
         "change_username": ChangeUsernameSerializer,
         "retrieve": UserDetailSerializer,
         "feed": PostListSerializer,
+    }
+    permission_classes = (IsUserTheOwner,)
+    permission_action_classes = {
+        "retrieve": (IsAuthenticatedOrReadOnly,),
+        "list": (IsAuthenticatedOrReadOnly,),
     }
     lookup_field = "username"
 
@@ -55,8 +65,9 @@ class UserViewSet(
 
     @action(methods=["POST"], detail=True)
     def avatar(self, request, *args, **kwargs):
+        user = self.get_object()
         serializer = self.get_serializer_class()(
-            data=request.data, instance=request.user
+            data=request.data, instance=user
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -65,8 +76,9 @@ class UserViewSet(
 
     @action(methods=["POST"], detail=True)
     def change_username(self, request, *args, **kwargs):
+        user = self.get_object()
         serializer = self.get_serializer_class()(
-            data=request.data, instance=request.user
+            data=request.data, instance=user
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()

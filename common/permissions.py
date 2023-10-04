@@ -2,6 +2,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from post.models import Comment
 from subreddit.models import SubredditUser
+from users.models.user import User
 
 
 class IsSubredditOwnerOrModerator(IsAuthenticatedOrReadOnly):
@@ -62,4 +63,6 @@ class IsUserTheOwner(IsAuthenticatedOrReadOnly):
                 return obj.user == request.user
             if hasattr(obj, "owner"):
                 return obj.owner == request.user
+            if isinstance(obj, User):
+                return obj == request.user
         return False
