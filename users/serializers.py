@@ -86,7 +86,7 @@ class ChangeUsernameSerializer(serializers.ModelSerializer):
         return username
 
     def validate_confirm(self, confirm: bool):
-        if confirm is False:
+        if confirm is not True:
             raise serializers.ValidationError("Confirm username change")
         return confirm
 
