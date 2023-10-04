@@ -1,6 +1,6 @@
-from typing import Optional
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import Q
+from django.db.models.query import QuerySet
 
 
 class UserManager(BaseUserManager):
@@ -31,5 +31,12 @@ class UserManager(BaseUserManager):
 
     def get_by_natural_key(self, login_field: str | None):
         return self.get(
-            Q(username=login_field) | Q(email=login_field) | Q(phone_number=login_field)
+            Q(username=login_field)
+            | Q(email=login_field)
+            | Q(phone_number=login_field)
         )
+
+
+class ActiveUserManager(BaseUserManager):
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset().filter(is_active=True)

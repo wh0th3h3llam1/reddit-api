@@ -15,7 +15,7 @@ from common.constants import FieldConstants
 from common.utils import get_avatar_path, get_default_avatar_path
 from common.validators import username_validator
 from core.models import BaseModel
-from users.managers import UserManager
+from users.managers import ActiveUserManager, UserManager
 
 if TYPE_CHECKING:
     from django.db.models import Manager
@@ -75,6 +75,7 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     )
 
     objects = UserManager()
+    active = ActiveUserManager()
 
     username_last_changed = models.DateTimeField(
         verbose_name=_("Username Last Changed on"), blank=True, null=True
