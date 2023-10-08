@@ -4,7 +4,8 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 
-from common.mixins import SerializerActionClassMixin
+from common.mixins import PermissionActionClassMixin, SerializerActionClassMixin
+from common.permissions import IsSubredditOwnerOrModerator, IsUserTheOwner
 from subreddit.models import Subreddit, SubredditLink
 from subreddit.serializers import (
     SubredditCreateUpdateSerializer,
@@ -17,7 +18,9 @@ from subreddit.serializers import (
 
 
 @extend_schema(tags=["Subreddit"])
-class SubredditViewSet(SerializerActionClassMixin, ModelViewSet):
+class SubredditViewSet(
+    PermissionActionClassMixin, SerializerActionClassMixin, ModelViewSet
+):
     queryset = Subreddit.objects.prefetch_related(
         "joined_users", "links", "moderators"
     ).all()
@@ -25,6 +28,11 @@ class SubredditViewSet(SerializerActionClassMixin, ModelViewSet):
     serializer_action_classes = {
         "list": SubredditListSerializer,
         "retrieve": SubredditDetailSerializer,
+    }
+    permission_action_classes = {
+        "update": ((IsUserTheOwner | IsSubredditOwnerOrModerator),),
+        "partial_update": ((IsUserTheOwner | IsSubredditOwnerOrModerator),),
+        "destroy": (IsUserTheOwner,),
     }
     lookup_field = "name"
 
