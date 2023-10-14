@@ -89,6 +89,17 @@ class SubredditUser(BaseModel):
     subreddit = models.ForeignKey(
         to=Subreddit, on_delete=models.CASCADE, related_name="joined_users"
     )
+    # banned = models.BooleanField(verbose_name=_("Is User banned?"), default=False)
+    # notes = models.TextField(blank=True, null=True)
+    # banned_till = models.DateTimeField(blank=True, null=True)
+    # #! TODO Add appropriate `to` & `related_name` field
+    # banned_by = models.ForeignKey(
+    #     to=Moderator,
+    #     on_delete=models.SET_NULL,
+    #     related_name="banned_subreddit_users",
+    #     blank=True,
+    #     null=True,
+    # )
 
     class Meta:
         verbose_name = "Subreddit User"
