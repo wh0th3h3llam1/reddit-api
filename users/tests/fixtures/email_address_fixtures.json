@@ -1,0 +1,272 @@
+[
+    {
+        "model": "account.emailaddress",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "email": "admin@reddit-api.org",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddre0ss",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "email": "root@reddit-api.xyz",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 3,
+        "fields": {
+            "user": 3,
+            "email": "user1@domain.com",
+            "verified": false,
+            "primary": false
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 4,
+        "fields": {
+            "user": 4,
+            "email": "test@user-api.com",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 5,
+        "fields": {
+            "user": 5,
+            "email": "fpoole@wheeler.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 6,
+        "fields": {
+            "user": 6,
+            "email": "wclark@cross.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 7,
+        "fields": {
+            "user": 7,
+            "email": "ricky96@gmail.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 8,
+        "fields": {
+            "user": 8,
+            "email": "morenodavid@stark.com",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 9,
+        "fields": {
+            "user": 9,
+            "email": "kgraham@yahoo.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 10,
+        "fields": {
+            "user": 10,
+            "email": "gary94@hotmail.com",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 11,
+        "fields": {
+            "user": 11,
+            "email": "michael18@turner.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 12,
+        "fields": {
+            "user": 12,
+            "email": "howardbrian@cook.org",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 13,
+        "fields": {
+            "user": 13,
+            "email": "christine22@matthews.biz",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 14,
+        "fields": {
+            "user": 14,
+            "email": "christophermoore@johnston-roberts.com",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 15,
+        "fields": {
+            "user": 15,
+            "email": "brad63@johnson.com",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 16,
+        "fields": {
+            "user": 16,
+            "email": "bryantkelly@pratt.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 17,
+        "fields": {
+            "user": 17,
+            "email": "james35@jones-shelton.com",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 18,
+        "fields": {
+            "user": 18,
+            "email": "suzannelove@hotmail.com",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 19,
+        "fields": {
+            "user": 19,
+            "email": "umerritt@kaiser.info",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 20,
+        "fields": {
+            "user": 20,
+            "email": "williamsdavid@yahoo.com",
+            "verified": false,
+            "primary": false
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 21,
+        "fields": {
+            "user": 21,
+            "email": "vrodriguez@yahoo.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 22,
+        "fields": {
+            "user": 22,
+            "email": "hallrebecca@hotmail.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 23,
+        "fields": {
+            "user": 23,
+            "email": "rogerhendricks@gmail.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 24,
+        "fields": {
+            "user": 24,
+            "email": "jay26@hotmail.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 25,
+        "fields": {
+            "user": 25,
+            "email": "franksmith@hotmail.com",
+            "verified": true,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 20,
+        "fields": {
+            "user": 26,
+            "email": "williamsdavid@gmail.com",
+            "verified": false,
+            "primary": true
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 21,
+        "fields": {
+            "user": 27,
+            "email": "v.rodriguez65@shendy.org",
+            "verified": false,
+            "primary": false
+        }
+    }
+]
