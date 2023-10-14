@@ -7,7 +7,6 @@ from post.models import Post, Comment
 
 
 post_index = Index(name="posts")
-
 post_index.settings(number_of_shards=1, number_of_replicas=0)
 
 

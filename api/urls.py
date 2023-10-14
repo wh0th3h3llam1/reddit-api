@@ -30,6 +30,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_nested import routers
 
 from post.views import CommentViewSet, PostViewSet
+from search.views import SearchView
 from subreddit.views import SubredditLinkViewSet, SubredditViewSet
 from users.views import UserDetailView, UserViewSet
 
@@ -68,6 +69,7 @@ router_urls = [
     path("", include(post_router.urls)),
     path("", include(comment_router.urls)),
     path("", include(subreddit_link_router.urls)),
+    path("search/", SearchView.as_view(), name="search"),
 ]
 
 dj_rest_auth_urls = [

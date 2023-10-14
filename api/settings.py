@@ -250,4 +250,4 @@ if USERNAME_CHANGE_ALLOWED_AFTER <= 1:
     USERNAME_CHANGE_ALLOWED_AFTER = 14
 
 
-ELASTICSEARCH_DSL = {"default": {"hosts": "localhost:9200"}}
+ELASTICSEARCH_DSL = {"default": {"hosts": "192.168.29.102:9292"}}
