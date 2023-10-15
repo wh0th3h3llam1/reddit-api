@@ -14,6 +14,7 @@ class SubredditAdmin(admin.ModelAdmin):
     list_display = ("name", "display_name", "owner", "nsfw")
     list_filter = ("owner", "nsfw")
     inlines = (SubredditLinkInline,)
+    readonly_fields = ("about",)
 
 
 class ModeratorAdmin(admin.ModelAdmin):

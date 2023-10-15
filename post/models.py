@@ -30,7 +30,9 @@ class Post(BaseModel):
     )
     title = models.CharField(max_length=200)
     body = models.TextField(blank=True, null=True)
-    slug = models.SlugField(verbose_name=_("Post Slug"))
+    slug = models.SlugField(
+        verbose_name=_("Post Slug"), max_length=250, unique=True
+    )
 
     post_type = models.CharField(max_length=8, choices=POST_TYPES)
 

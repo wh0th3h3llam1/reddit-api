@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class PermissionActionClassMixin(object):
 
     """
@@ -24,6 +27,8 @@ class PermissionActionClassMixin(object):
     get_permissions.
     `lookup`: self.permission_classes
     """
+
+    permission_action_classes: dict[str, Any]
 
     def get_permissions(self):
         try:
