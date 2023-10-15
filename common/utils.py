@@ -36,5 +36,12 @@ def get_avatar_path(instance, filename, **kwargs) -> str:
     return file_path
 
 
+def get_chat_attachment_path(instance, filename, **kwargs):
+    name, ext = filename.rsplit(".", 1)
+    file = f"{name.lower().replace(' ', '_')[:48]}_{uuid.uuid4().hex[:8]}.{ext}"
+    file_path = f"chat/attachments/{instance.room.name}/{file}"
+    return file_path
+
+
 def get_timedelta(days=14) -> timezone.timedelta:
     return timezone.timedelta(days=days)

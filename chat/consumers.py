@@ -10,7 +10,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
         self.room_name = self.scope["url_route"]["kwargs"]["room_id"]
 
-        await self.channel_layer.group_
+        await self.channel_layer.group_add()
 
         await super().accept()
 

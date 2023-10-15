@@ -34,3 +34,11 @@ class ThreadType:
     PRIVATE = "private"
     GROUP = "group"
     CHANNEL = "channel"
+
+
+class MessageType:
+    TEXT = "text"
+    IMAGE = "image"
+    VIDEO = "video"
+    GIF = "gif"
+    FILE = "file"
