@@ -4,6 +4,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
+from elasticsearch.exceptions import ConnectionError
 from elasticsearch_dsl import Q
 
 from post.documents import PostDocument
@@ -71,6 +72,14 @@ class SearchView(ListAPIView):
         except ValidationError as err:
             return Response(
                 {"message": err.message}, status=HTTP_400_BAD_REQUEST
+            )
+        except ConnectionError as err:
+            return Response(
+                {
+                    "message": "Contact Admin with mentioned code",
+                    "code": "elasticsearch_error",
+                },
+                status=HTTP_400_BAD_REQUEST,
             )
 
         page = self.paginate_queryset(queryset)
