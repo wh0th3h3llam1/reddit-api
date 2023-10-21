@@ -1,0 +1,169 @@
+[
+    {
+        "model": "subreddit.subreddit",
+        "pk": 1,
+        "fields": {
+            "created": "2023-05-08T06:20:56.455Z",
+            "modified": "2023-09-21T09:16:16.907Z",
+            "owner": 1,
+            "name": "AskReddit",
+            "display_name": "Ask Reddit...",
+            "description": "r/AskReddit is the place to ask and answer thought-provoking questions.",
+            "about": "About this subreddit",
+            "nsfw": false,
+            "max_pinned_posts": 3,
+            "max_pinned_comments": 2,
+            "comments_locked_by_default": false,
+            "image": "subreddit/default_image.png",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 2,
+        "fields": {
+            "created": "2023-05-20T12:57:05.406Z",
+            "modified": "2023-05-20T12:57:05.406Z",
+            "owner": 2,
+            "name": "MadeMeSmile",
+            "display_name": "Things that made me Smile today :)",
+            "description": "Anythin wholesome that happened today that made you smile",
+            "about": "Anythin wholesome that happened today that made you smile",
+            "nsfw": false,
+            "max_pinned_posts": 2,
+            "max_pinned_comments": 1,
+            "comments_locked_by_default": false,
+            "image": "subreddit/MadeMeSmile/jacqueline-munguia-1pawjicd60c-unsplash_56a0d7ae.jpg",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddituser",
+        "pk": 1,
+        "fields": {
+            "created": "2023-05-08T06:28:01.116Z",
+            "modified": "2023-05-08T06:28:01.116Z",
+            "user": 1,
+            "subreddit": 1
+        }
+    },
+    {
+        "model": "subreddit.subreddituser",
+        "pk": 2,
+        "fields": {
+            "created": "2023-05-20T12:57:05.416Z",
+            "modified": "2023-05-20T12:57:05.416Z",
+            "user": 2,
+            "subreddit": 2
+        }
+    },
+    {
+        "model": "subreddit.subreddituser",
+        "pk": 3,
+        "fields": {
+            "created": "2023-05-27T18:07:28.653Z",
+            "modified": "2023-05-27T18:07:28.653Z",
+            "user": 1,
+            "subreddit": 2
+        }
+    },
+    {
+        "model": "subreddit.moderator",
+        "pk": 1,
+        "fields": {
+            "created": "2023-05-08T06:20:56.465Z",
+            "modified": "2023-05-08T06:20:56.465Z",
+            "user": 1,
+            "subreddit": 1,
+            "added_by": null
+        }
+    },
+    {
+        "model": "subreddit.moderator",
+        "pk": 2,
+        "fields": {
+            "created": "2023-05-08T08:35:41.191Z",
+            "modified": "2023-05-08T08:35:41.191Z",
+            "user": 2,
+            "subreddit": 1,
+            "added_by": null
+        }
+    },
+    {
+        "model": "subreddit.moderator",
+        "pk": 3,
+        "fields": {
+            "created": "2023-05-20T12:57:05.417Z",
+            "modified": "2023-05-20T12:57:05.417Z",
+            "user": 2,
+            "subreddit": 2,
+            "added_by": null
+        }
+    },
+    {
+        "model": "subreddit.subredditlink",
+        "pk": 1,
+        "fields": {
+            "created": "2023-05-11T14:13:22.557Z",
+            "modified": "2023-05-11T14:13:22.557Z",
+            "subreddit": 1,
+            "name": "Discord",
+            "url": "https://dicord.gg/"
+        }
+    },
+    {
+        "model": "subreddit.subredditlink",
+        "pk": 2,
+        "fields": {
+            "created": "2023-05-11T14:14:11.270Z",
+            "modified": "2023-05-11T14:14:11.270Z",
+            "subreddit": 1,
+            "name": "Twitter",
+            "url": "https://twitter.com"
+        }
+    },
+    {
+        "model": "subreddit.subredditlink",
+        "pk": 3,
+        "fields": {
+            "created": "2023-05-20T13:13:15.876Z",
+            "modified": "2023-05-21T14:01:07.972Z",
+            "subreddit": 2,
+            "name": "Discord",
+            "url": "https://discord.gg/MadeMeSmile"
+        }
+    },
+    {
+        "model": "subreddit.subredditlink",
+        "pk": 4,
+        "fields": {
+            "created": "2023-05-20T13:53:30.196Z",
+            "modified": "2023-05-20T13:53:30.196Z",
+            "subreddit": 2,
+            "name": "Twitter",
+            "url": "https://twitter.com/@MadeMeSmile"
+        }
+    },
+    {
+        "model": "subreddit.subredditlink",
+        "pk": 5,
+        "fields": {
+            "created": "2023-05-20T13:58:41.543Z",
+            "modified": "2023-05-21T14:01:15.364Z",
+            "subreddit": 2,
+            "name": "Fritter",
+            "url": "https://fritter.gg/MadeMeSmile"
+        }
+    },
+    {
+        "model": "subreddit.subredditlink",
+        "pk": 6,
+        "fields": {
+            "created": "2023-05-20T15:32:07.398Z",
+            "modified": "2023-05-21T14:01:22.379Z",
+            "subreddit": 2,
+            "name": "Instagram",
+            "url": "https://instagram.com/MadeMeCry"
+        }
+    }
+]
