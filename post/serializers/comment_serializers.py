@@ -6,6 +6,7 @@ from drf_spectacular.utils import (
 )
 from rest_framework import serializers
 
+from common.mixins import SerializerCreateUpdateOnlyMixin
 from core.serializers import DynamicFieldsModelSerializer
 from post.models import Comment
 
@@ -37,6 +38,8 @@ from post.models import Comment
     ]
 )
 class CommentSerializer(DynamicFieldsModelSerializer):
+    """Retrieve a single comment"""
+
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     children = serializers.SerializerMethodField()
     text = serializers.CharField(required=True)
@@ -73,21 +76,33 @@ class CommentListSerializer(DynamicFieldsModelSerializer):
         fields = "__all__"
 
 
-class CommentCreateSerializer(DynamicFieldsModelSerializer):
+class CommentCreateUpdateSerializer(
+    SerializerCreateUpdateOnlyMixin, DynamicFieldsModelSerializer
+):
+    """Serializer used to create and update a comment"""
+
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    text = serializers.CharField(required=True)
 
     def validate(self, attrs: dict) -> dict:
         parent = attrs.get("parent", None)
         post = attrs.get("post")
 
         if parent is not None:
+            if self.instance is not None and parent.id == self.instance.id:
+                raise serializers.ValidationError(
+                    "Parent comment cannot be same as current"
+                )
+
             if not Comment.objects.filter(id=parent.id, post=post).exists():
                 raise serializers.ValidationError(
-                    "Parent Comment doesn't belong to the Post"
+                    "Parent comment doesn't belong to the Post"
                 )
 
         return attrs
 
     class Meta:
         model = Comment
-        fields = ("user", "parent", "text", "post")
+        fields = ("id", "user", "parent", "text", "post")
+        create_only_fields = ("parent", "post")
