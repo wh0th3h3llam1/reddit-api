@@ -2,7 +2,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from post.models import Comment
 from subreddit.models import SubredditUser
-from users.models.user import User
+from users.models import User
 
 
 class IsSubredditOwnerOrModerator(IsAuthenticatedOrReadOnly):

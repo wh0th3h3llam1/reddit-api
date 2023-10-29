@@ -1,11 +1,13 @@
 from django.test import TestCase
+
 from rest_framework import status
+from rest_framework.reverse import reverse
 
 
 class AuthenticationTest(TestCase):
     def setUp(self) -> None:
-        self.signup_url = "/auth/signup/"
-        self.login_url = "/auth/login/"
+        self.signup_url = reverse("rest_register")
+        self.login_url = reverse("rest_login")
 
     def test_signup_user_empty(self):
         data = {}
