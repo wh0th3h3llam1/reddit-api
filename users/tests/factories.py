@@ -27,10 +27,10 @@ class UserFactory(factory.django.DjangoModelFactory):
     phone_number = fake.phone_number()
     avatar = factory.LazyAttribute(
         lambda _: ContentFile(
-            factory.django.ImageField()._make_data(
+            content=factory.django.ImageField()._make_data(
                 {"width": 500, "height": 500}
             ),
-            "example.jpg",
+            name="example.jpg",
         )
     )
     deactivated_on = None
