@@ -1,0 +1,192 @@
+[
+    {
+        "model": "subreddit.subreddit",
+        "pk": 1,
+        "fields": {
+            "created": "2023-05-08T06:20:56.455Z",
+            "modified": "2023-09-21T09:16:16.907Z",
+            "owner": 2,
+            "name": "Reddit",
+            "display_name": "Official Reddit Subreddit",
+            "description": "Reddit is the place to ask and answer thought-provoking questions.",
+            "about": "About this subreddit",
+            "nsfw": false,
+            "max_pinned_posts": 3,
+            "max_pinned_comments": 2,
+            "comments_locked_by_default": false,
+            "image": "subreddit/default_image.png",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 2,
+        "fields": {
+            "created": "2023-05-08T06:20:56.455Z",
+            "modified": "2023-09-21T09:16:16.907Z",
+            "owner": 2,
+            "name": "memes",
+            "display_name": "Memes",
+            "description": "/r/Memes the original since 2008",
+            "about": "Memes! A way of describing cultural information being shared. An element of a culture or system of behavior that may be considered to be passed from one individual to another by nongenetic means, especially imitation.",
+            "nsfw": false,
+            "max_pinned_posts": 3,
+            "max_pinned_comments": 2,
+            "comments_locked_by_default": true,
+            "image": "subreddit/default_image.png",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 3,
+        "fields": {
+            "created": "2023-05-20T12:57:05.406Z",
+            "modified": "2023-05-20T12:57:05.406Z",
+            "owner": 6,
+            "name": "MadeMeSmile",
+            "display_name": "Made Me Smile",
+            "description": "Things that made you Smile today :)",
+            "about": "Anything wholesome that happened today that made you smile",
+            "nsfw": false,
+            "max_pinned_posts": 2,
+            "max_pinned_comments": 1,
+            "comments_locked_by_default": false,
+            "image": "subreddit/MadeMeSmile/jacqueline-munguia-1pawjicd60c-unsplash_56a0d7ae.jpg",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 4,
+        "fields": {
+            "created": "2023-05-20T12:57:05.406Z",
+            "modified": "2023-05-20T12:57:05.406Z",
+            "owner": 2,
+            "name": "gaming",
+            "display_name": "r/gaming",
+            "description": "The Number One Gaming forum on the Internet.",
+            "about": "",
+            "nsfw": false,
+            "max_pinned_posts": 2,
+            "max_pinned_comments": 1,
+            "comments_locked_by_default": false,
+            "image": "subreddit/default_image.png",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 5,
+        "fields": {
+            "created": "2023-05-20T12:57:05.406Z",
+            "modified": "2023-05-20T12:57:05.406Z",
+            "owner": 2,
+            "name": "AskReddit",
+            "display_name": "AskReddit...",
+            "description": "r/AskReddit is the place to ask and answer thought-provoking questions.",
+            "about": "r/AskReddit is the place to ask and answer thought-provoking questions.",
+            "nsfw": false,
+            "max_pinned_posts": 2,
+            "max_pinned_comments": 1,
+            "comments_locked_by_default": false,
+            "image": "subreddit/MadeMeSmile/jacqueline-munguia-1pawjicd60c-unsplash_56a0d7ae.jpg",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 6,
+        "fields": {
+            "created": "2023-05-20T12:57:05.406Z",
+            "modified": "2023-05-20T12:57:05.406Z",
+            "owner": 11,
+            "name": "Programming",
+            "display_name": "Computer programming",
+            "description": "",
+            "about": "",
+            "nsfw": false,
+            "max_pinned_posts": 2,
+            "max_pinned_comments": 1,
+            "comments_locked_by_default": false,
+            "image": "subreddit/MadeMeSmile/jacqueline-munguia-1pawjicd60c-unsplash_56a0d7ae.jpg",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 7,
+        "fields": {
+            "created": "2023-05-20T12:57:05.406Z",
+            "modified": "2023-05-20T12:57:05.406Z",
+            "owner": 19,
+            "name": "Anime",
+            "display_name": "/r/Anime",
+            "description": " Reddit's premier anime community.",
+            "about": "",
+            "nsfw": false,
+            "max_pinned_posts": 2,
+            "max_pinned_comments": 1,
+            "comments_locked_by_default": false,
+            "image": "subreddit/MadeMeSmile/jacqueline-munguia-1pawjicd60c-unsplash_56a0d7ae.jpg",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 8,
+        "fields": {
+            "created": "2023-06-19T01:37:05.406Z",
+            "modified": "2023-07-21T12:57:05.406Z",
+            "owner": 12,
+            "name": "aws",
+            "display_name": "AWS",
+            "description": "Amazon Web Services (AWS): S3, EC2, SQS, RDS, DynamoDB, IAM, CloudFormation, Route 53, VPC and more",
+            "about": " News, articles and tools covering Amazon Web Services (AWS), including S3, EC2, SQS, RDS, DynamoDB, IAM, CloudFormation, AWS-CDK, Route 53, CloudFront, Lambda, VPC, Cloudwatch, Glacier and more. ",
+            "nsfw": false,
+            "max_pinned_posts": 2,
+            "max_pinned_comments": 1,
+            "comments_locked_by_default": false,
+            "image": "subreddit/MadeMeSmile/jacqueline-munguia-1pawjicd60c-unsplash_56a0d7ae.jpg",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 9,
+        "fields": {
+            "created": "2023-05-20T12:57:05.406Z",
+            "modified": "2023-05-20T12:57:05.406Z",
+            "owner": 5,
+            "name": "HolUp",
+            "display_name": "Hol'Up",
+            "description": "Hol'Up, wait a minute!",
+            "about": " A subreddit for things that make you go \"Hol Up... wait a minute\" ",
+            "nsfw": false,
+            "max_pinned_posts": 2,
+            "max_pinned_comments": 1,
+            "comments_locked_by_default": false,
+            "image": "subreddit/MadeMeSmile/jacqueline-munguia-1pawjicd60c-unsplash_56a0d7ae.jpg",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    },
+    {
+        "model": "subreddit.subreddit",
+        "pk": 10,
+        "fields": {
+            "created": "2023-05-20T12:57:05.406Z",
+            "modified": "2023-05-20T12:57:05.406Z",
+            "owner": 2,
+            "name": "FOSS",
+            "display_name": "r/FOSS",
+            "description": "We are dedicated to the discussion of Free and Open Source Software, or FOSS.",
+            "about": "We are dedicated to the discussion of Free and Open Source Software, or FOSS.",
+            "nsfw": false,
+            "max_pinned_posts": 2,
+            "max_pinned_comments": 1,
+            "comments_locked_by_default": false,
+            "image": "subreddit/MadeMeSmile/jacqueline-munguia-1pawjicd60c-unsplash_56a0d7ae.jpg",
+            "cover_picture": "subreddit/default_cover.png"
+        }
+    }
+]
