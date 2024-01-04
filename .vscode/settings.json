@@ -1,7 +1,18 @@
 {
+    "black-formatter.args": [
+        "--line-length=80"
+    ],
     "djangointellisense.settingsModule": "api.settings",
     "djangointellisense.projectRoot": "${workspaceFolder}",
     "editor.formatOnSave": true,
+    "pylint.args": [
+        "--disable=E1101",
+        "--disable=C0114",
+        "--disable=C0115",
+        "--disable=C0116",
+        "--load-plugin=pylint_django",
+        "--django-settings-module=api.settings"
+    ],
     "python.analysis.autoFormatStrings": true,
     "python.analysis.completeFunctionParens": true,
     "python.analysis.gotoDefinitionInStringLiteral": true,
@@ -36,17 +47,4 @@
     "python.analysis.autoImportCompletions": true,
     "python.analysis.indexing": true,
     "python.analysis.inlayHints.functionReturnTypes": true,
-    "python.formatting.blackArgs": [
-        "--line-length=80"
-    ],
-    "python.linting.enabled": true,
-    "python.linting.pylintArgs": [
-        "--disable=E1101",
-        "--disable=C0114",
-        "--disable=C0115",
-        "--disable=C0116",
-        "--load-plugin=pylint_django",
-        "--django-settings-module=api.settings"
-    ],
-    "python.linting.pylintEnabled": true,
 }
