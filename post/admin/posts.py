@@ -1,6 +1,7 @@
 from django.contrib import admin, messages
-from django.http.request import HttpRequest
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import format_html
 from django.utils.translation import ngettext
 
 from post.admin.admin_forms import PostAdminForm
@@ -10,10 +11,18 @@ from post.models import Post
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("title", "slug", "post_type", "locked")
+    list_display = ("title", "get_subreddit", "slug", "post_type", "locked")
     list_filter = ("post_type", "locked")
     actions = ("lock_posts", "unlock_posts")
     form = PostAdminForm
+
+    def get_subreddit(self, instance: Post):
+        link = reverse(
+            "admin:subreddit_subreddit_change", args=[instance.subreddit.id]
+        )
+        return format_html("<a href='{}'>{}</a>", link, instance.subreddit)
+
+    get_subreddit.short_description = "Subreddit"
 
     def get_prepopulated_fields(self, request, obj):
         prepoulated_fields = super().get_prepopulated_fields(request, obj)

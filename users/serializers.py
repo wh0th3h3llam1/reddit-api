@@ -57,7 +57,7 @@ class UserDetailSerializer(DynamicFieldsModelSerializer):
             instance=instance.comments.all(),
             many=True,
             read_only=True,
-            fields=("post", "text", "edited_at", "locked"),
+            fields=("id", "post", "text", "edited_at", "locked"),
         ).data
 
     class Meta:
@@ -117,7 +117,10 @@ class ChangeUsernameSerializer(serializers.ModelSerializer):
 class UserAvatarSerializer(serializers.ModelSerializer):
     avatar = serializers.ImageField(required=False, allow_empty_file=True)
     remove = serializers.BooleanField(
-        required=False, default=False, write_only=True
+        required=False,
+        default=False,
+        write_only=True,
+        help_text="Provide this field to remove the background and use the default avatar",
     )
 
     class Meta:

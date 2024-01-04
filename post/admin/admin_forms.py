@@ -24,9 +24,15 @@ class CommentAdminForm(forms.ModelForm):
         post = self.cleaned_data.get("post")
 
         if parent is not None:
+            if parent.id == self.instance.id:
+                self.add_error(
+                    field="parent",
+                    error="Parent comment cannot be same as current",
+                )
             if not Comment.objects.filter(id=parent.id, post=post).exists():
-                raise forms.ValidationError(
-                    "Parent Comment doesn't belong to the Post"
+                self.add_error(
+                    field=None,
+                    error="Parent comment doesn't belong to the Post",
                 )
 
         return self.cleaned_data
