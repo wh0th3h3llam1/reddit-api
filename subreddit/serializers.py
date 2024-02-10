@@ -1,10 +1,17 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 
 from common.mixins import SerializerCreateUpdateOnlyMixin
 from core.serializers import DynamicFieldsModelSerializer
-from subreddit.models import Moderator, Subreddit, SubredditLink
+from subreddit.models import (
+    BannedUser,
+    Moderator,
+    Subreddit,
+    SubredditLink,
+    SubredditUser,
+)
 from users.serializers import UserSerializer
 
 
@@ -16,10 +23,18 @@ class SubredditLinkSerializer(DynamicFieldsModelSerializer):
 
 class ModeratorSerializer(DynamicFieldsModelSerializer):
     user = UserSerializer(fields=("id", "username"))
+    username = serializers.CharField(source="user.username", read_only=True)
 
     class Meta:
         model = Moderator
-        fields = ("user", "subreddit", "added_by")
+        fields = ("user", "username", "subreddit", "added_by")
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Moderator.objects.all(),
+                fields=("user", "subreddit"),
+                message="User is already Moderator for the subreddit",
+            )
+        ]
 
 
 class SubredditListSerializer(DynamicFieldsModelSerializer):
@@ -54,7 +69,7 @@ class SubredditDetailSerializer(DynamicFieldsModelSerializer):
             instance.moderators.all(),
             many=True,
             read_only=True,
-            fields=("user",),
+            fields=("username",),
         ).data
 
     def get_joined(self, instance: Subreddit) -> bool:
@@ -129,6 +144,51 @@ class SubredditCreateUpdateSerializer(
             data=links, exclude=("subreddit",), many=True
         )
         serializer.is_valid(raise_exception=True)
+
+
+class SubredditUserSerializer(DynamicFieldsModelSerializer):
+
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = SubredditUser
+        fields = ("user", "subreddit")
+        validators = [
+            UniqueTogetherValidator(
+                queryset=SubredditUser.objects.all(),
+                fields=("user", "subreddit"),
+                message="You already joined the subreddit",
+            )
+        ]
+
+
+class BannedUserSerializer(DynamicFieldsModelSerializer):
+
+    banned_by = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = BannedUser
+        fields = (
+            "user",
+            "subreddit",
+            "description",
+            "banned_until",
+            "banned_by",
+        )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=BannedUser.objects.all(),
+                fields=("user", "subreddit"),
+                message="User already banned",
+            )
+        ]
+
+    def create(self, validated_data):
+        instance, _ = BannedUser.objects.get_or_create(**validated_data)
+
+        return instance
 
 
 def add_link_to_subreddit(
