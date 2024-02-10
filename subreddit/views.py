@@ -56,9 +56,9 @@ class SubredditViewSet(
         serializer = self.get_serializer(
             data={"subreddit": self.get_object().id}
         )
+        data = {"message": "Joined Subreddit"}
         if serializer.is_valid():
             serializer.save()
-            data = serializer.data
         else:
             if msg in serializer.errors.get("non_field_errors", []):
                 data = {"message": "You already joined the subreddit"}
