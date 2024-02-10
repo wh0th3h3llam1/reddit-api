@@ -1,7 +1,8 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
+from rest_framework.validators import UniqueTogetherValidator
+from common.fields import CurrentModeratorDefault
 
 from common.mixins import SerializerCreateUpdateOnlyMixin
 from core.serializers import DynamicFieldsModelSerializer
@@ -164,9 +165,7 @@ class SubredditUserSerializer(DynamicFieldsModelSerializer):
 
 class BannedUserSerializer(DynamicFieldsModelSerializer):
 
-    banned_by = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
+    banned_by = serializers.HiddenField(default=CurrentModeratorDefault())
 
     class Meta:
         model = BannedUser

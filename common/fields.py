@@ -1,7 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+
+from subreddit.models import Moderator
 
 
 class SlugCreateOnlyField(serializers.CreateOnlyDefault):
@@ -22,3 +23,10 @@ class RichTextEditorSerializerField(serializers.CharField):
         # if text and not text.is_valid():
         #     raise ValidationError(self.error_messages["invalid"])
         return str_value
+
+
+class CurrentModeratorDefault(serializers.CurrentUserDefault):
+
+    def __call__(self, serializer_field):
+        user = super().__call__(serializer_field)
+        return Moderator.objects.get(user=user)
