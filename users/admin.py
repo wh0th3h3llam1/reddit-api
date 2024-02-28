@@ -17,6 +17,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ("username", "email", "last_login", "is_active")
     list_filter = ("is_active", "is_staff")
     search_fields = ("username", "email", "phone_number")
+    search_help_text = "Search via Username, Email or Phone Number"
     filter_horizontal = []
 
     fieldsets = FieldSets(
@@ -25,6 +26,7 @@ class UserAdmin(BaseUserAdmin):
         permissions=("is_active", "is_staff", "is_superuser"),
         important_dates=(
             "username_last_changed",
+            "deactivated_on",
             "last_login",
         ),
     )

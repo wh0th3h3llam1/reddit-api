@@ -13,6 +13,8 @@ from post.models import Post
 class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "get_subreddit", "slug", "post_type", "locked")
     list_filter = ("post_type", "locked")
+    search_fields = ("title", "slug", "body")
+    search_help_text = "Search via Title, Slug or Body"
     actions = ("lock_posts", "unlock_posts")
     form = PostAdminForm
 
