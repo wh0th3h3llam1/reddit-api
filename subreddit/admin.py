@@ -1,5 +1,6 @@
-from gettext import ngettext
 from django.contrib import admin, messages
+from django.utils.html import format_html
+from django.utils.translation import ngettext
 
 from subreddit.models import (
     BannedUser,
@@ -37,8 +38,44 @@ class SubredditUserAdmin(admin.ModelAdmin):
 
 
 class SubredditLinkAdmin(admin.ModelAdmin):
-    list_display = ("name", "url", "subreddit")
+    list_display = ("name", "get_url", "subreddit")
     list_filter = ("subreddit",)
+    search_fields = ("name",)
+    search_help_text = "Search via Name"
+
+    def get_url(self, instance: SubredditLink):
+        return format_html(
+            '<a href="{}" target="_blank">{}</a>', instance.url, instance.url
+        )
+
+    get_url.short_description = "URL"
+
+
+class BannedUserAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "subreddit",
+        "description",
+        "banned_until",
+        "banned_by",
+    )
+    list_filter = ("user", "subreddit", "banned_until")
+    search_fields = ("description",)
+    search_help_text = "Search via Description"
+    actions = ("unban_users",)
+
+    @admin.action(description="Unban selected Users")
+    def unban_users(self, request, queryset):
+        updated = queryset.delete()
+        self.message_user(
+            request,
+            ngettext(
+                singular=f"{updated} user unbanned",
+                plural=f"{updated} users unbanned",
+                number=updated,
+            ),
+            messages.SUCCESS,
+        )
 
 
 class BannedUserAdmin(admin.ModelAdmin):
