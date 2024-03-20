@@ -8,8 +8,8 @@ from users.models import User
 class IsSubredditOwnerOrModerator(IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
         if super().has_object_permission(request, view, obj):
-            return obj.owner.id in list(
-                obj.moderators.values_list("id", flat=True)
+            return obj.owner.id in obj.moderators.values_list(
+                "user__id", flat=True
             )
         return False
 
@@ -65,4 +65,13 @@ class IsUserTheOwner(IsAuthenticatedOrReadOnly):
                 return obj.owner == request.user
             if isinstance(obj, User):
                 return obj == request.user
+        return False
+
+
+class IsUserBanned(IsAuthenticatedOrReadOnly):
+    message = "You are banned from interacting in this subreddit"
+
+    def has_object_permission(self, request, view, obj):
+        if super().has_object_permission(request, view, obj):
+            return bool(not obj.banned_users.filter(user=request.user).exists())
         return False

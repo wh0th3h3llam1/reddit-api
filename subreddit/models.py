@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
 from ckeditor.fields import RichTextField
@@ -64,6 +64,7 @@ class Subreddit(LifecycleModelMixin, BaseModel):
     # )
     # moderators = models.ManyToManyField(to=User, through="Moderator")
 
+    banned_users: Manager["BannedUser"]
     joined_users: Manager["SubredditUser"]
     moderators: Manager["Moderator"]
     links: Manager["SubredditLink"]
@@ -78,8 +79,9 @@ class Subreddit(LifecycleModelMixin, BaseModel):
 
     @hook(hook=AFTER_CREATE)
     def add_owner_as_mod(self) -> None:
-        SubredditUser.objects.create(user=self.owner, subreddit=self)
-        Moderator.objects.create(user=self.owner, subreddit=self)
+        with transaction.atomic():
+            SubredditUser.objects.create(user=self.owner, subreddit=self)
+            Moderator.objects.create(user=self.owner, subreddit=self)
 
 
 class SubredditUser(BaseModel):
@@ -141,25 +143,30 @@ class SubredditLink(BaseModel):
         return f"{self.subreddit.name} || {self.name} - {self.url}"
 
 
-# class BannedSubredditUser(BaseModel):
-#     user = models.ForeignKey(
-#         to=User, on_delete=models.CASCADE, related_name="banned_subreddits"
-#     )
-#     subreddit = models.ForeignKey(
-#         to=Subreddit, on_delete=models.CASCADE, related_name="banned_users"
-#     )
-#     banned = models.BooleanField(verbose_name=_("Is user banned?"), default=False)
-#     note = models.TextField(blank=True, null=True)
-#     banned_till = models.DateTimeField()
-#     #! TODO Add appropriate `to` & `related_name` field
-#     banned_by = models.ForeignKey(
-#         to=Moderator,
-#         on_delete=models.SET_NULL,
-#         related_name="subreddit_users_banned",
-#         blank=True,
-#         null=True,
-#     )
+class BannedUser(BaseModel):
+    """Users banned from Subreddits by moderators"""
 
-#     class Meta:
-#         verbose_name = _("Banned Subreddit User")
-#         verbose_name_plural = _("Banned Subreddit Users")
+    user = models.ForeignKey(
+        to=User, on_delete=models.CASCADE, related_name="banned_subreddits"
+    )
+    subreddit = models.ForeignKey(
+        to=Subreddit, on_delete=models.CASCADE, related_name="banned_users"
+    )
+    description = models.TextField(blank=True, null=True)
+    banned_until = models.DateTimeField(blank=True, null=True)
+
+    banned_by = models.ForeignKey(
+        to=Moderator,
+        on_delete=models.SET_NULL,
+        related_name="subreddit_users_banned",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = _("Banned User")
+        verbose_name_plural = _("Banned Users")
+        unique_together = ("user", "subreddit")
+
+    def __str__(self) -> str:
+        return f"{self.user} - {self.subreddit}"

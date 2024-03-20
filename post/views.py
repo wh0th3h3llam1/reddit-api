@@ -18,7 +18,7 @@ from common.permissions import (
 from post.models import Comment, Post
 from post.serializers import (
     CommentSerializer,
-    CommentCreateSerializer,
+    CommentCreateUpdateSerializer,
     PostCreateUpdateSerializer,
     PostDetailSerializer,
 )
@@ -113,8 +113,13 @@ class PostViewSet(
 class CommentViewSet(
     PermissionActionClassMixin, SerializerActionClassMixin, ModelViewSet
 ):
-    serializer_class = CommentSerializer
-    serializer_action_classes = {"create": CommentCreateSerializer}
+    """Comment ViewSet"""
+
+    serializer_class = CommentCreateUpdateSerializer
+    serializer_action_classes = {
+        "list": CommentSerializer,
+        "retrieve": CommentSerializer,
+    }
     permission_classes = (IsAuthenticatedOrReadOnly,)
     permission_action_classes = {
         "create": (IsCommentLocked,),
@@ -130,3 +135,14 @@ class CommentViewSet(
             queryset = queryset.filter(parent__isnull=True)
 
         return queryset
+
+    def get_serializer(self, *args, **kwargs):
+        exclude = []
+
+        if self.action in ["list", "retrieve"]:
+            children = self.request.query_params.get("children", False)
+            if children is False:
+                exclude += ["children"]
+
+        kwargs["exclude"] = exclude
+        return super().get_serializer(*args, **kwargs)

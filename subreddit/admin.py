@@ -1,6 +1,14 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.utils.html import format_html
+from django.utils.translation import ngettext
 
-from subreddit.models import Moderator, Subreddit, SubredditLink, SubredditUser
+from subreddit.models import (
+    BannedUser,
+    Moderator,
+    Subreddit,
+    SubredditLink,
+    SubredditUser,
+)
 
 # Register your models here.
 
@@ -13,7 +21,9 @@ class SubredditLinkInline(admin.TabularInline):
 class SubredditAdmin(admin.ModelAdmin):
     list_display = ("name", "display_name", "owner", "nsfw")
     list_filter = ("owner", "nsfw")
+    search_fields = ("name", "display_name")
     inlines = (SubredditLinkInline,)
+    readonly_fields = ("about",)
 
 
 class ModeratorAdmin(admin.ModelAdmin):
@@ -22,15 +32,79 @@ class ModeratorAdmin(admin.ModelAdmin):
 
 
 class SubredditUserAdmin(admin.ModelAdmin):
-    list_display = ("user", "subreddit")
+    list_display = ("user", "subreddit", "created")
+    list_filter = ("subreddit",)
+    search_fields = ("user__username",)
 
 
 class SubredditLinkAdmin(admin.ModelAdmin):
-    list_display = ("name", "url", "subreddit")
+    list_display = ("name", "get_url", "subreddit")
     list_filter = ("subreddit",)
+    search_fields = ("name",)
+    search_help_text = "Search via Name"
+
+    def get_url(self, instance: SubredditLink):
+        return format_html(
+            '<a href="{}" target="_blank">{}</a>', instance.url, instance.url
+        )
+
+    get_url.short_description = "URL"
+
+
+class BannedUserAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "subreddit",
+        "description",
+        "banned_until",
+        "banned_by",
+    )
+    list_filter = ("user", "subreddit", "banned_until")
+    search_fields = ("description",)
+    search_help_text = "Search via Description"
+    actions = ("unban_users",)
+
+    @admin.action(description="Unban selected Users")
+    def unban_users(self, request, queryset):
+        updated = queryset.delete()
+        self.message_user(
+            request,
+            ngettext(
+                singular=f"{updated} user unbanned",
+                plural=f"{updated} users unbanned",
+                number=updated,
+            ),
+            messages.SUCCESS,
+        )
+
+
+class BannedUserAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "subreddit",
+        "description",
+        "banned_until",
+        "banned_by",
+    )
+    list_filter = ("user", "subreddit", "banned_until")
+    actions = ("unban_users",)
+
+    @admin.action(description="Unban selected Users")
+    def unban_users(self, request, queryset):
+        updated = queryset.delete()
+        self.message_user(
+            request,
+            ngettext(
+                singular=f"{updated} user unbanned",
+                plural=f"{updated} users unbanned",
+                number=updated,
+            ),
+            messages.SUCCESS,
+        )
 
 
 admin.site.register(Subreddit, SubredditAdmin)
 admin.site.register(SubredditUser, SubredditUserAdmin)
 admin.site.register(Moderator, ModeratorAdmin)
 admin.site.register(SubredditLink, SubredditLinkAdmin)
+admin.site.register(BannedUser, BannedUserAdmin)
