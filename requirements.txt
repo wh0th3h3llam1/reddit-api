@@ -47,7 +47,7 @@ oauthlib==3.2.2
 packaging==23.1
 pathspec==0.11.1
 phonenumbers==8.13.16
-Pillow==10.0.0
+Pillow==10.3.0
 platformdirs==3.9.1
 pre-commit==3.3.2
 pycparser==2.21
