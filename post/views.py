@@ -43,6 +43,8 @@ class PostViewSet(
     SerializerActionClassMixin,
     ModelViewSet,
 ):
+    """Post ViewSet"""
+
     serializer_class = PostCreateUpdateSerializer
     serializer_action_classes = {
         "list": PostDetailSerializer,

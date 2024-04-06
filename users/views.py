@@ -40,6 +40,11 @@ class UserViewSet(
     mixins.DestroyModelMixin,
     GenericViewSet,
 ):
+    """User ViewSet
+
+    It allows retrieve, update and delete methods
+    """
+
     queryset = User.active.all()
     serializer_class = UserUpdateSerializer
     serializer_action_classes = {
@@ -65,6 +70,8 @@ class UserViewSet(
 
     @action(methods=["POST"], detail=True)
     def avatar(self, request, *args, **kwargs):
+        """Change or remove user avatar"""
+
         user = self.get_object()
         serializer = self.get_serializer_class()(
             data=request.data, instance=user
@@ -74,8 +81,11 @@ class UserViewSet(
 
         return Response(data=serializer.data, status=HTTP_200_OK)
 
+    # @extend_schema(responses=[])
     @action(methods=["POST"], detail=True)
     def change_username(self, request, *args, **kwargs):
+        """Allows changing of username"""
+
         user = self.get_object()
         serializer = self.get_serializer_class()(
             data=request.data, instance=user

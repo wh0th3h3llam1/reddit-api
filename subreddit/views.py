@@ -30,6 +30,8 @@ from subreddit.serializers import (
 class SubredditViewSet(
     PermissionActionClassMixin, SerializerActionClassMixin, ModelViewSet
 ):
+    """Subreddit ViewSet"""
+
     queryset = Subreddit.objects.prefetch_related(
         "banned_users", "joined_users", "links", "moderators"
     ).all()
@@ -108,6 +110,8 @@ class SubredditLinkViewSet(
     mixins.ListModelMixin,
     GenericViewSet,
 ):
+    """SubredditLink ViewSet"""
+
     serializer_class = SubredditLinkSerializer
     lookup_field = "id"
 
