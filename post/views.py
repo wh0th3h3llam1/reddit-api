@@ -1,4 +1,3 @@
-from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 
@@ -13,6 +12,7 @@ from common.permissions import (
     IsCommentLocked,
     IsPostLocked,
     IsSubredditMember,
+    IsUserBanned,
     IsUserTheOwner,
 )
 from post.models import Comment, Post
@@ -54,10 +54,10 @@ class PostViewSet(
     # lookup_fields = ("slug", "id", "pk")
     permission_classes = (IsAuthenticatedOrReadOnly,)
     permission_action_classes = {
-        "create": (IsSubredditMember,),
-        "update": (IsUserTheOwner, IsPostLocked),
-        "partial_update": (IsUserTheOwner, IsPostLocked),
-        "destroy": (IsUserTheOwner,),
+        "create": (IsUserBanned, IsSubredditMember),
+        "update": (IsUserBanned, IsUserTheOwner, IsPostLocked),
+        "partial_update": (IsUserBanned, IsUserTheOwner, IsPostLocked),
+        "destroy": (IsUserBanned, IsUserTheOwner),
     }
 
     def get_queryset(self):
@@ -75,10 +75,7 @@ class PostViewSet(
     def get_serializer(self, *args, **kwargs):
         exclude = []
         if self.action == "list":
-            exclude += (
-                "subreddit",
-                "comments",
-            )
+            exclude += ("subreddit", "comments")
         if self.action == "retrieve":
             exclude += ("subreddit",)
         kwargs["exclude"] = exclude
@@ -124,10 +121,10 @@ class CommentViewSet(
     }
     permission_classes = (IsAuthenticatedOrReadOnly,)
     permission_action_classes = {
-        "create": (IsCommentLocked,),
-        "update": (IsUserTheOwner, IsCommentLocked),
-        "partial_update": (IsUserTheOwner, IsCommentLocked),
-        "destroy": (IsUserTheOwner,),
+        "create": (IsUserBanned, IsCommentLocked),
+        "update": (IsUserBanned, IsUserTheOwner, IsCommentLocked),
+        "partial_update": (IsUserBanned, IsUserTheOwner, IsCommentLocked),
+        "destroy": (IsUserBanned, IsUserTheOwner),
     }
 
     def get_queryset(self):

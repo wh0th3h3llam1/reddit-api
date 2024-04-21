@@ -53,6 +53,7 @@ class SubredditViewSet(
 
     @action(methods=["POST"], detail=True)
     def join(self, request, *args, **kwargs):
+        """Allow a user to join subreddit"""
 
         msg = "You already joined the subreddit"
         serializer = self.get_serializer(
@@ -63,7 +64,7 @@ class SubredditViewSet(
             serializer.save()
         else:
             if msg in serializer.errors.get("non_field_errors", []):
-                data = {"message": "You already joined the subreddit"}
+                data = {"message": msg}
             else:
                 data = serializer.errors
 
@@ -71,7 +72,9 @@ class SubredditViewSet(
 
     @action(methods=["POST"], detail=True)
     def ban(self, request, *args, **kwargs):
+        """Allow moderators to ban user"""
 
+        msg = "User already banned"
         serializer = self.get_serializer(
             data={"subreddit": self.get_object().id, **request.data}
         )
@@ -79,10 +82,8 @@ class SubredditViewSet(
         if serializer.is_valid():
             serializer.save()
         else:
-            if "User already banned" in serializer.errors.get(
-                "non_field_errors", []
-            ):
-                data = {"message": "User already banned"}
+            if msg in serializer.errors.get("non_field_errors", []):
+                data = {"message": msg}
 
         return Response(data=data, status=HTTP_200_OK)
 
@@ -116,7 +117,7 @@ class SubredditLinkViewSet(
     lookup_field = "id"
 
     def get_queryset(self):
-        queryset = SubredditLink.objects.filter(
+        queryset = SubredditLink.objects.select_related("subreddit").filter(
             subreddit__name=self.kwargs["subreddit_name"]
         )
         return queryset

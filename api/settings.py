@@ -76,6 +76,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Add the account middleware
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "api.urls"
@@ -222,7 +224,7 @@ SPECTACULAR_SETTINGS = {
     },
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
     "COMPONENT_SPLIT_REQUEST": True,
-    "CAMERLIZE_NAMES": True,
+    "CAMELIZE_NAMES": True,
 }
 
 

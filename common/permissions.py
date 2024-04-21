@@ -8,9 +8,7 @@ from users.models.user import User
 class IsSubredditOwnerOrModerator(IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
         if super().has_object_permission(request, view, obj):
-            return obj.owner.id in obj.moderators.values_list(
-                "user__id", flat=True
-            )
+            return obj.moderators.contains(obj.owner)
         return False
 
 
@@ -52,11 +50,13 @@ class IsCommentLocked(IsAuthenticatedOrReadOnly):
             is_thread_locked = Comment.objects.filter(
                 id__in=parents, locked=True
             ).exists()
-            return not is_thread_locked
+            return bool(not is_thread_locked)
         return False
 
 
 class IsUserTheOwner(IsAuthenticatedOrReadOnly):
+    message = "You are not allowed to perform this action"
+
     def has_object_permission(self, request, view, obj):
         if super().has_object_permission(request, view, obj):
             if hasattr(obj, "user"):
