@@ -2,7 +2,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-from common.fields import CurrentModeratorDefault
+from common.fields import CurrentModeratorDefault, UserSlugRelatedField
 
 from common.mixins import SerializerCreateUpdateOnlyMixin
 from core.serializers import DynamicFieldsModelSerializer
@@ -13,6 +13,7 @@ from subreddit.models import (
     SubredditLink,
     SubredditUser,
 )
+from users.models import User
 from users.serializers import UserSerializer
 
 
@@ -28,7 +29,7 @@ class ModeratorSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Moderator
-        fields = ("user", "username", "subreddit", "added_by")
+        fields = ("user", "username", "subreddit", "added_by", "created")
         validators = [
             UniqueTogetherValidator(
                 queryset=Moderator.objects.all(),
@@ -67,7 +68,7 @@ class SubredditDetailSerializer(DynamicFieldsModelSerializer):
     @extend_schema_field(OpenApiTypes.OBJECT)
     def get_moderators(self, instance: Subreddit):
         return ModeratorSerializer(
-            instance.moderators.all(),
+            instance.moderators.all().only("user"),
             many=True,
             read_only=True,
             fields=("username",),
@@ -188,6 +189,37 @@ class BannedUserSerializer(DynamicFieldsModelSerializer):
         instance, _ = BannedUser.objects.get_or_create(**validated_data)
 
         return instance
+
+
+class BannedUserDetailSerializer(DynamicFieldsModelSerializer):
+    user = serializers.ReadOnlyField(source="user.username")
+    banned_by = ModeratorSerializer(fields=("user", "created"), read_only=True)
+
+    class Meta:
+        model = BannedUser
+        fields = (
+            "user",
+            "subreddit",
+            "description",
+            "banned_until",
+            "banned_by",
+        )
+
+
+class UnbanUserSerializer(DynamicFieldsModelSerializer):
+    user = UserSlugRelatedField(
+        slug_field="username",
+        queryset=User.objects.prefetch_related("banned_subreddits").filter(
+            banned_subreddits__isnull=False
+        ),
+    )
+
+    class Meta:
+        model = BannedUser
+        fields = ("user",)
+
+    def save(self, banned_user: BannedUser):
+        return banned_user.delete()
 
 
 def add_link_to_subreddit(

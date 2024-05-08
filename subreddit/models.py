@@ -100,6 +100,12 @@ class SubredditUser(BaseModel):
     def __str__(self) -> str:
         return f"{self.user} - {self.subreddit}"
 
+    @property
+    def is_moderator(self) -> bool:
+        return self.user.id in self.subreddit.moderators.select_related(
+            "user"
+        ).values_list("user__id", flat=True)
+
 
 class Moderator(BaseModel):
     user = models.ForeignKey(
@@ -117,6 +123,7 @@ class Moderator(BaseModel):
     )
 
     invited_moderators: Manager["Moderator"]
+    subreddit_users_banned: Manager["BannedUser"]
 
     class Meta:
         verbose_name = _("Moderator")
@@ -170,3 +177,7 @@ class BannedUser(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.user} - {self.subreddit}"
+
+    @property
+    def is_perma_banned(self):
+        return self.banned_until is None
