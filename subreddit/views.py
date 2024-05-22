@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 
@@ -14,6 +15,7 @@ from common.permissions import (
     IsUserBanned,
     IsUserTheOwner,
 )
+from subreddit.filters import SubredditFilterSet
 from subreddit.models import Subreddit, SubredditLink
 from subreddit.serializers import (
     BannedUserDetailSerializer,
@@ -35,9 +37,6 @@ class SubredditViewSet(
 ):
     """Subreddit ViewSet"""
 
-    queryset = Subreddit.objects.prefetch_related(
-        "banned_users", "joined_users", "links", "moderators"
-    ).all()
     serializer_class = SubredditCreateUpdateSerializer
     serializer_action_classes = {
         "list": SubredditListSerializer,
@@ -57,6 +56,9 @@ class SubredditViewSet(
         "unban": (IsSubredditOwnerOrModerator,),
     }
     lookup_field = "name"
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = SubredditFilterSet
+    search_fields = ["name"]
 
     def get_queryset(self):
         queryset = Subreddit.objects.all()
