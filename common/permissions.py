@@ -1,14 +1,17 @@
+from django.utils import timezone
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from post.models import Comment
-from subreddit.models import SubredditUser
+from subreddit.models import BannedUser, SubredditUser
 from users.models.user import User
 
 
 class IsSubredditOwnerOrModerator(IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
         if super().has_object_permission(request, view, obj):
-            return obj.moderators.contains(obj.owner)
+            return request.user.id in obj.moderators.select_related(
+                "user"
+            ).values_list("user__id", flat=True)
         return False
 
 
@@ -70,6 +73,21 @@ class IsUserTheOwner(IsAuthenticatedOrReadOnly):
 
 class IsUserBanned(IsAuthenticatedOrReadOnly):
     message = "You are banned from interacting in this subreddit"
+
+    def has_permission(self, request, view):
+        if super().has_permission(request, view):
+            subreddit = request.path.rsplit("/api/r/")[-1].split("/")[0]
+
+            if not subreddit:
+                return False
+
+            banned_user = BannedUser.objects.filter(
+                user=request.user, subreddit__name=subreddit
+            ).first()
+            if banned_user and banned_user.banned_until > timezone.now():
+                return False
+            return True
+        return False
 
     def has_object_permission(self, request, view, obj):
         if super().has_object_permission(request, view, obj):
