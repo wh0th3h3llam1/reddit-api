@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.utils import timezone
+from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -33,6 +34,24 @@ class UserDetailSerializer(DynamicFieldsModelSerializer):
     posts = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
 
+    @extend_schema_serializer(
+        examples=[
+            OpenApiExample(
+                name="Example",
+                summary="Posts example",
+                value={
+                    "subreddit": "AskReddit",
+                    "title": "Post Title",
+                    "body": "Post Body",
+                    "slug": "post-title",
+                    "edited_at": None,
+                    "locked": False,
+                },
+                response_only=True,
+            )
+        ],
+        many=True,
+    )
     def get_posts(self, instance: User) -> dict:
         from post.serializers.post_serializers import PostListSerializer
 

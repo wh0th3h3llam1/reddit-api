@@ -30,3 +30,13 @@ class CurrentModeratorDefault(serializers.CurrentUserDefault):
     def __call__(self, serializer_field):
         user = super().__call__(serializer_field)
         return Moderator.objects.get(user=user)
+
+
+class UserSlugRelatedField(serializers.SlugRelatedField):
+    """Verifies if a user exists in `banned_users` of a subreddit"""
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(
+            banned_subreddits__subreddit=self.context["subreddit"]
+        )
+        return queryset

@@ -84,6 +84,7 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
 
+    banned_subreddits: Manager["BannedUser"]
     comments: Manager["Comment"]
     emails: Manager["Email"]
     joined_subreddits: Manager["SubredditUser"]
